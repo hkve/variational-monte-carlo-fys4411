@@ -50,7 +50,7 @@ def vmcRun(D=3, N=10, logMet=6, logEq=5, omega=1.0, alpha=0.5, stepLength=0.1, i
     subprocess.run(args_run)
 
 def vmcRunTiming(D=3, N=10, logMet=6, logEq=5, omega=1.0, alpha=0.5, stepLength=0.1, analytical=True, filename="timing.txt"):
-    vmc_path = vmcPath()
+    vmc_path = rootPath() / pl.Path("build/timing")
     filename_path = dataPath(filename)
 
     assert vmc_path.exists(), f"I cannot find {vmc_path} :((, are you sure you have compiled?"

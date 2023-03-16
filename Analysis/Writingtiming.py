@@ -14,12 +14,12 @@ n=np.linspace(2,N_max,steps)
 print(n)
 TimeAnalytical=np.zeros(steps) #make sure to vary the amount of  metropolis steps with the amount of particles
 for i in range(0,steps):
-    TimeAnalytical[i]=cpp_utils.vmcRun(N=n[i], analytical=True, timing=True, filename="1timeana.txt")
-    TimeAnalytical[i]=cpp_utils.vmcRun(N=n[i], analytical=True, timing=True, filename="2timeana.txt")
-    TimeAnalytical[i]=cpp_utils.vmcRun(N=n[i], analytical=True, timing=True, filename="3timeana.txt")
-    TimeAnalytical[i]=cpp_utils.vmcRun(N=n[i], analytical=False, timing=True, filename="1timenum.txt")
-    TimeAnalytical[i]=cpp_utils.vmcRun(N=n[i], analytical=False, timing=True, filename="2timenum.txt")
-    TimeAnalytical[i]=cpp_utils.vmcRun(N=n[i], analytical=False, timing=True, filename="3timenum.txt")
+    TimeAnalytical[i]=cpp_utils.vmcRunTiming(N=n[i], analytical=True, filename="1timeana.txt")
+    TimeAnalytical[i]=cpp_utils.vmcRunTiming(N=n[i], analytical=True, filename="2timeana.txt")
+    TimeAnalytical[i]=cpp_utils.vmcRunTiming(N=n[i], analytical=True, filename="3timeana.txt")
+    TimeAnalytical[i]=cpp_utils.vmcRunTiming(N=n[i], analytical=False, filename="1timenum.txt")
+    TimeAnalytical[i]=cpp_utils.vmcRunTiming(N=n[i], analytical=False, filename="2timenum.txt")
+    TimeAnalytical[i]=cpp_utils.vmcRunTiming(N=n[i], analytical=False,filename="3timenum.txt")
 
 print(n)
 
