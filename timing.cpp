@@ -17,6 +17,8 @@
 #include "particle.h"
 #include "sampler.h"
 
+using namespace std;
+
 int main(int argv, char **argc)
 {
     // Seed for the random number generator
@@ -126,7 +128,7 @@ int main(int argv, char **argc)
     {
         std:cout<<"You need a filename"<<std::endl;
     }
-    
+
     sampler->WriteTimingToFiles(*system, filename, analytical, numberOfEquilibrationSteps, timelapse);
 
         
