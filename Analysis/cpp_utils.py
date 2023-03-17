@@ -17,6 +17,10 @@ def vmcPath():
     vmc_path = rootPath() / pl.Path("build/vmc")
     return vmc_path
 
+def timingPath():
+    timing_path = rootPath() / pl.Path("build/timing")
+    return timing_path
+
 def dataPath(filename):
     filename_path = rootPath() / pl.Path(f"Data/{filename}")
     return filename_path
@@ -49,13 +53,18 @@ def vmcRun(D=3, N=10, logMet=6, logEq=5, omega=1.0, alpha=0.5, stepLength=0.1, i
 
     subprocess.run(args_run)
 
+<<<<<<< HEAD
 def vmcRunTiming(D=3, N=10, logMet=6, logEq=5, omega=1.0, alpha=0.5, stepLength=0.1, analytical=True, filename="timing.txt"):
     vmc_path = rootPath() / pl.Path("build/timing")
+=======
+def timingRun(D=3, N=10, logMet=6, logEq=5, omega=1.0, alpha=0.5, stepLength=0.1, analytical=True, filename="timing.txt"):
+    timing_path = timingPath()
+>>>>>>> 3e5ec2aaa9c8d55bd6eb06e5fb8e9a7b85116840
     filename_path = dataPath(filename)
 
-    assert vmc_path.exists(), f"I cannot find {vmc_path} :((, are you sure you have compiled?"
+    assert timing_path.exists(), f"I cannot find {timing_path} :((, are you sure you have compiled?"
     args = [
-        vmc_path,
+        timing_path,
         D,
         N,
         logMet,
@@ -79,7 +88,7 @@ def vmcLoad(filename):
 
     df = pd.read_csv(filename_path, delim_whitespace=True)
 
-    int_cols = ["Dimensions", "Particles" ,"Metro-steps"]
+    int_cols = ["Dimensions", "Particles" ,"Metro-steps", "Analytical", "Imposampling"]
     numeric_cols = [col for col in df.columns if col not in int_cols]
     
     for col in numeric_cols:
