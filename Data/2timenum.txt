@@ -1,0 +1,4 @@
+          Dimensions           Particles         Metro-steps            Eq-steps          StepLength                Time          Analytical              Energy          Energy_std
+                   3                   2             1000000              100000             0.10000            88436808                   0             3.00000             0.00001
+                   3                   6             1000000              100000             0.10000           784932380                   0             9.00000             0.00004
+                   3                  10             1000000              100000             0.10000          1289386771                   0            15.00000             0.00010
