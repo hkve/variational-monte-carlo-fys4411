@@ -17,7 +17,7 @@ public:
     void printOutputToTerminal(class System &system);
     void writeOutToFile(class System &system, std::string filename, double omega, bool analytical, bool importanceSampling);
     void WriteTimingToFiles(System &system, std::string filename, bool analytical, unsigned int numberOfEquilibrationSteps, double timing);
-    void writeGradientSearchToFile(System &system, std::string filename, double alpha_0, int epoch, double alpha, double beta);
+    void writeGradientSearchToFile(System &system, std::string filename, double alpha_0, int epoch, double alpha, double beta_0, double beta);
     void output(System &system, std::string filename, double omega, bool analytical, bool importanceSampling);
     void computeAverages();
     std::vector<double> getEnergyDerivative();
@@ -49,7 +49,7 @@ private:
     double m_cumulativeEnergy = 0;
     double m_cumulativeEnergy2 = 0;
 
-    int m_numberOfParams = 1; // this should not be hard coded but we will change it later
+    int m_numberOfParams = 2;
 
     std::vector<double> m_energyDerivative = std::vector<double>(m_numberOfParams, 0);
     std::vector<double> m_cumulativeDerPsiE = std::vector<double>(m_numberOfParams, 0);

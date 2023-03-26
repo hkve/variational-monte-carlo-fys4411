@@ -221,7 +221,7 @@ void Sampler::WriteTimingToFiles(System &system, std::string filename, bool anal
     outfile.close();
 }
 
-void Sampler::writeGradientSearchToFile(System &system, std::string filename, double alpha_0, int epoch, double alpha, double beta)
+void Sampler::writeGradientSearchToFile(System &system, std::string filename, double alpha_0, int epoch, double alpha, double beta_0, double beta)
 {
     // break filename to add "detailed_" to the beginning, after the path
     std::string path = filename.substr(0, filename.find_last_of("/\\") + 1);
@@ -287,19 +287,19 @@ std::vector<double> Sampler::getEnergyDerivative()
     return m_energyDerivative;
 }
 
-
-void Sampler::openSaveSample(std::string filename) 
+void Sampler::openSaveSample(std::string filename)
 {
     m_saveSamplesFile = std::ofstream(filename, std::ios::out | std::ios::binary | std::ios::trunc); // create binary file
-    if (!m_saveSamplesFile) {
+    if (!m_saveSamplesFile)
+    {
         std::cerr << "Error: could not open file " << filename << " to store samples." << std::endl;
         exit(1);
     }
 }
 void Sampler::saveSample(unsigned int iteration)
 {
-    double energy = m_cumulativeEnergy/double(iteration+1);
-    m_saveSamplesFile.write(reinterpret_cast<const char*>(&energy), sizeof(double));
+    double energy = m_cumulativeEnergy / double(iteration + 1);
+    m_saveSamplesFile.write(reinterpret_cast<const char *>(&energy), sizeof(double));
 }
 void Sampler::closeSaveSample()
 {

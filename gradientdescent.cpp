@@ -28,8 +28,8 @@ int main(int argv, char **argc)
     unsigned int numberOfMetropolisSteps = (unsigned int)pow(2, 20);
     unsigned int numberOfEquilibrationSteps = (unsigned int)pow(2, 20);
     double omega = 1.0;                                 // Oscillator frequency.
-    double alpha = omega / 2.0;                         // Variational parameter. If using gradient
-                                                        // descent, this is the initial guess.
+    double alpha = omega / 2.0;                         // Variational parameter. If using gradient descent, this is the initial guess.
+    double beta = 1.0;                                  // Beta will be 1 unless we are using the interacting wave function.
     double stepLength = 0.1;                            // Metropolis step length.
     double epsilon = 0.01;                              // Tolerance for gradient descent.
     double lr = 0.01;                                   // Learning rate for gradient descent.
@@ -106,11 +106,10 @@ int main(int argv, char **argc)
     std::unique_ptr<class WaveFunction> wavefunction;
 
     if (!analytical)
-        wavefunction = std::make_unique<SimpleGaussianNumerical>(alpha, dx); // constructor (can only be moved once).
+        wavefunction = std::make_unique<SimpleGaussianNumerical>(alpha, beta, dx); // constructor (can only be moved once).
 
     if (!interacting)
-        wavefunction = std::make_unique<SimpleGaussian>(
-            alpha);
+        wavefunction = std::make_unique<SimpleGaussian>(alpha, beta);
     else
     {
         wavefunction = std::make_unique<InteractingGaussian>(

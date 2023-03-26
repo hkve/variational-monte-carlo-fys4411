@@ -27,8 +27,7 @@ int main(int argv, char **argc)
     unsigned int numberOfMetropolisSteps = (unsigned int)pow(2, 20);
     unsigned int numberOfEquilibrationSteps = (unsigned int)pow(2, 20);
     double omega = 1.0;                                 // Oscillator frequency.
-    double alpha = omega / 2.0;                         // Variational parameter. If using gradient
-                                                        // descent, this is the initial guess.
+    double alpha = omega / 2.0;                         // Variational parameter. If using gradient descent, this is the initial guess.
     double stepLength = 0.1;                            // Metropolis step length.
     double epsilon = 0.05;                              // Tolerance for gradient descent.
     double lr = 0.1;                                    // Learning rate for gradient descent.

@@ -7,7 +7,7 @@
 class SimpleGaussian : public WaveFunction
 {
 public:
-    SimpleGaussian(double alpha);
+    SimpleGaussian(double alpha, double beta);
     double evaluate(std::vector<std::unique_ptr<class Particle>> &particles);
     double evaluate_w(int proposed_particle_idx, class Particle &proposed_particle, class Particle &old_particle, std::vector<std::unique_ptr<class Particle>> &particles);
     double computeParamDerivative(std::vector<std::unique_ptr<class Particle>> &particles, int parameterIndex);
@@ -19,7 +19,7 @@ public:
 class SimpleGaussianNumerical : public SimpleGaussian
 {
 public:
-    SimpleGaussianNumerical(double alpha, double dx);
+    SimpleGaussianNumerical(double alpha, double beta, double dx);
     double computeDoubleDerivative(std::vector<std::unique_ptr<class Particle>> &particles);
     double evaluateSingleParticle(class Particle &particle);
 

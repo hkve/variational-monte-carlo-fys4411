@@ -17,7 +17,6 @@
 #include "particle.h"
 #include "sampler.h"
 
-
 using namespace std;
 
 int main(int argv, char **argc)
@@ -32,6 +31,7 @@ int main(int argv, char **argc)
     unsigned int numberOfEquilibrationSteps = (unsigned int)pow(2, 20);
     double omega = 1.0;         // Oscillator frequency.
     double alpha = omega / 2.0; // Variational parameter. If using gradient descent, this is the initial guess.
+    double beta = 1.0;          // Variational parameter. Unless uusing interaction term, this is 1.
     double stepLength = 0.1;    // Metropolis step length.
     int epochs = 5;             // Number of epochs for gradient descent.
     double lr = 0.1;            // Learning rate for gradient descent.
@@ -41,7 +41,7 @@ int main(int argv, char **argc)
     bool analytical = true;
     double D = 0.5;
     string filename = "";
-    
+
     // If no arguments are given, show usage.
     if (argv == 1)
     {
@@ -77,7 +77,7 @@ int main(int argv, char **argc)
     if (argv >= 10)
         filename = argc[9];
 
-        // The random engine can also be built without a seed
+    // The random engine can also be built without a seed
     auto rng = std::make_unique<Random>(seed);
 
     // Initialize particles
@@ -94,10 +94,10 @@ int main(int argv, char **argc)
 
     // Check if numerical gaussian should be used.
     if (!analytical)
-        wavefunction = std::make_unique<SimpleGaussianNumerical>(alpha, dx);
-    
+        wavefunction = std::make_unique<SimpleGaussianNumerical>(alpha, beta, dx);
+
     solver = std::make_unique<Metropolis>(std::move(rng));
-        // Create system pointer, passing in all classes.
+    // Create system pointer, passing in all classes.
     auto system = std::make_unique<System>(
         // Construct unique_ptr to Hamiltonian
         std::move(hamiltonian),
@@ -109,7 +109,7 @@ int main(int argv, char **argc)
         std::move(particles));
 
     // Run steps to equilibrate particles
-    auto beginning = std::chrono::high_resolution_clock::now(); //Start timer
+    auto beginning = std::chrono::high_resolution_clock::now(); // Start timer
     auto acceptedEquilibrationSteps = system->runEquilibrationSteps(
         stepLength,
         numberOfEquilibrationSteps);
@@ -118,13 +118,14 @@ int main(int argv, char **argc)
     auto sampler = system->runMetropolisSteps(
         stepLength,
         numberOfMetropolisSteps);
-    auto ending = std::chrono::high_resolution_clock::now(); //end timer
-    double timelapse= std::chrono::duration_cast<std::chrono::microseconds>(ending - beginning).count(); //find time
+    auto ending = std::chrono::high_resolution_clock::now();                                              // end timer
+    double timelapse = std::chrono::duration_cast<std::chrono::microseconds>(ending - beginning).count(); // find time
     // Output information from the simulation, either as file or print
-    if (filename=="")
-        std:cout << "You need a filename" << endl;
+    if (filename == "")
+    std:
+        cout << "You need a filename" << endl;
     else
         sampler->WriteTimingToFiles(*system, filename, analytical, numberOfEquilibrationSteps, timelapse);
-    
+
     return 0;
 }

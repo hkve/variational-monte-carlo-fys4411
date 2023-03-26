@@ -48,7 +48,7 @@ std::unique_ptr<class Sampler> System::runMetropolisSteps(
       std::make_unique<Sampler>(m_numberOfParticles, m_numberOfDimensions,
                                 stepLength, numberOfMetropolisSteps);
 
-  if(m_saveSamples)
+  if (m_saveSamples)
     sampler->openSaveSample(m_saveSamplesFilename);
 
   for (unsigned int i = 0; i < numberOfMetropolisSteps; i++)
@@ -61,12 +61,12 @@ std::unique_ptr<class Sampler> System::runMetropolisSteps(
     // compute local energy
     sampler->sample(acceptedStep, this);
 
-    if(m_saveSamples)
+    if (m_saveSamples)
       sampler->saveSample(i);
   }
 
   sampler->computeAverages();
-  if(m_saveSamples)
+  if (m_saveSamples)
     sampler->closeSaveSample();
 
   return sampler;
@@ -79,7 +79,8 @@ std::unique_ptr<class Sampler> System::optimizeMetropolis(
   double gradient = 1;
   int epoch = 0;
   double alpha_0 = getWaveFunctionParameters()[0];
-  double beta = 0; // change later
+  double alpha, beta;
+  double beta_0 = getWaveFunctionParameters()[1];
   auto sampler =
       std::make_unique<Sampler>(m_numberOfParticles, m_numberOfDimensions,
                                 stepLength, numberOfMetropolisSteps);
@@ -107,8 +108,10 @@ std::unique_ptr<class Sampler> System::optimizeMetropolis(
 
     sampler = system.runMetropolisSteps(stepLength, numberOfMetropolisSteps);
 
+    alpha = getWaveFunctionParameters()[0];
+    beta = getWaveFunctionParameters()[1];
     std::vector<double> parameters = getWaveFunctionParameters();
-    sampler->writeGradientSearchToFile(system, filename, alpha_0, epoch, parameters[0], beta);
+    sampler->writeGradientSearchToFile(system, filename, alpha_0, epoch, alpha, beta_0, beta);
 
     std::vector<double> m_energyDerivative = sampler->getEnergyDerivative();
 
@@ -127,9 +130,10 @@ std::unique_ptr<class Sampler> System::optimizeMetropolis(
     m_waveFunction->setParameters(parameters);
   }
 
-  std::vector<double> parameters = getWaveFunctionParameters();
+  alpha = getWaveFunctionParameters()[0];
+  beta = getWaveFunctionParameters()[1];
   //  get the last epoch values
-  sampler->writeGradientSearchToFile(system, filename, alpha_0, epoch, parameters[0], beta);
+  sampler->writeGradientSearchToFile(system, filename, alpha_0, epoch, alpha, beta_0, beta);
 
   return sampler;
 }
@@ -162,7 +166,7 @@ double System::computeParamDerivative(int paramIndex)
   return m_waveFunction->computeParamDerivative(m_particles, paramIndex);
 }
 
-void System::saveSamples(std::string filename, int skip) 
+void System::saveSamples(std::string filename, int skip)
 {
   // Tells system to save local energy estimates during run
   m_saveSamples = true;
@@ -170,11 +174,11 @@ void System::saveSamples(std::string filename, int skip)
 
   // Due to powers of two being just a single bit 1, use bitwise AND to check if skip is a power of 2.
   bool isPow2 = false;
-  if(skip == 0)
+  if (skip == 0)
     isPow2 = true;
   else
-    isPow2 = skip > 0 && !(skip & (skip-1) );
-  
+    isPow2 = skip > 0 && !(skip & (skip - 1));
+
   assert(isPow2);
   m_skip = skip;
 }

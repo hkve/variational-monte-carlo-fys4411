@@ -108,7 +108,7 @@ int main(int argv, char **argc)
 
     // Check if numerical gaussian should be used.
     if (!analytical)
-        wavefunction = std::make_unique<SimpleGaussianNumerical>(alpha, dx);
+        wavefunction = std::make_unique<SimpleGaussianNumerical>(alpha, beta, dx);
 
     // Set what solver to use, pass on rng and additional parameters
     if (importanceSampling)
