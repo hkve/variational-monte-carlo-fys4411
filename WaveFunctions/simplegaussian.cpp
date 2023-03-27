@@ -26,20 +26,14 @@ double SimpleGaussian::evaluate(std::vector<std::unique_ptr<class Particle>> &pa
      * function.
      */
     int num_particles = particles.size();
-    int numberOfDimensions = particles.at(0)->getNumberOfDimensions();
 
     double r2 = 0;                     // r2 is the sum of the squared coordinates of the r vector
-    double r_q = 0;                    // r_q is the q'th coordinate of the r vector
     double alpha = m_parameters.at(0); // We don't need beta for simple gaussian
 
     for (int i = 0; i < num_particles; i++)
     {
         Particle particle = *particles.at(i);
-        for (int q = 0; q < numberOfDimensions; q++)
-        {
-            r_q = particle.getPosition().at(q);
-            r2 += r_q * r_q;
-        }
+        r2 += particle_r2(particle);
     }
 
     return std::exp(-alpha * r2);
@@ -51,20 +45,13 @@ double SimpleGaussian::computeParamDerivative(std::vector<std::unique_ptr<class 
      * mean the derivative with respect to the variational parameters.
      */
     int num_particles = particles.size();
-    int numberOfDimensions = particles.at(0)->getNumberOfDimensions();
-    double parameter = m_parameters.at(parameterIndex); // for alpha, parameterIndex = 0
 
     double r2_sum = 0;
-    double r_q = 0;
 
     for (int k = 0; k < num_particles; k++)
     {
         Particle particle = *particles.at(k);
-        for (int q = 0; q < numberOfDimensions; q++)
-        {
-            r_q = particle.getPosition().at(q);
-            r2_sum += r_q * r_q;
-        }
+        r2_sum += particle_r2(particle);
     }
     // notice this does not depend on the param as it is divided by the WF.
     return -r2_sum; // analytic derivative wrt alpha, only 1 param to optimize now, This needs to be generalized
@@ -85,16 +72,11 @@ double SimpleGaussian::computeDoubleDerivative(std::vector<std::unique_ptr<class
     double alpha = m_parameters.at(0);
 
     double r2_sum = 0;
-    double r_q = 0;
 
     for (int k = 0; k < num_particles; k++)
     {
         Particle particle = *particles.at(k);
-        for (int q = 0; q < numberOfDimensions; q++)
-        {
-            r_q = particle.getPosition().at(q);
-            r2_sum += r_q * r_q;
-        }
+        r2_sum += particle_r2(particle);
     }
 
     return 2 * alpha * (2 * alpha * r2_sum - num_particles * numberOfDimensions); // analytic double derivative
@@ -106,18 +88,14 @@ double SimpleGaussian::evaluate_w(int proposed_particle_idx, class Particle &pro
      This is the wave function ratio for the Metropolis algorithm.
      It is a clever way to avoid having to evaluate the wave function for all particles at each step.
      */
-    static const int numberOfDimensions = particles.at(0)->getNumberOfDimensions(); // static to avoid redeclaration between calls
     double alpha = m_parameters.at(0);
 
     double r2_proposed, r2_old;
     r2_proposed = 0;
     r2_old = 0;
 
-    for (int i = 0; i < numberOfDimensions; i++)
-    {
-        r2_proposed += proposed_particle.getPosition().at(i) * proposed_particle.getPosition().at(i);
-        r2_old += old_particle.getPosition().at(i) * old_particle.getPosition().at(i);
-    }
+    r2_proposed = particle_r2(proposed_particle);
+    r2_old = particle_r2(old_particle);
 
     return std::exp(-2.0 * alpha * (r2_proposed - r2_old));
 }
@@ -133,20 +111,14 @@ void SimpleGaussian::quantumForce(std::vector<std::unique_ptr<class Particle>> &
     }
 }
 
-SimpleGaussianNumerical::SimpleGaussianNumerical(double alpha, double dx) : SimpleGaussian(alpha)
+SimpleGaussianNumerical::SimpleGaussianNumerical(double alpha, double beta, double dx) : SimpleGaussian(alpha, beta)
 {
     m_dx = dx;
 }
 
 double SimpleGaussianNumerical::evaluateSingleParticle(class Particle &particle)
 {
-    double r2 = 0;
-    static const int numberOfDimensions = particle.getNumberOfDimensions();
-
-    for (int q = 0; q < numberOfDimensions; q++)
-    {
-        r2 += particle.getPosition().at(q) * particle.getPosition().at(q);
-    }
+    double r2 = particle_r2(particle);
 
     return std::exp(-m_parameters.at(0) * r2);
 }

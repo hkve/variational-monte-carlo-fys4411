@@ -28,8 +28,8 @@ int main(int argv, char **argc)
     unsigned int numberOfMetropolisSteps = (unsigned int)1e6;
     unsigned int numberOfEquilibrationSteps = (unsigned int)1e6;
     double omega = 1.0;         // Oscillator frequency.
-    double alpha = omega / 2.0; // Variational parameter. If using gradient
-                                // descent, this is the initial guess.
+    double alpha = omega / 2.0; // Variational parameter. If using gradient descent, this is the initial guess.
+    double beta = 1.0;          // This will only be different from 1.0 if using interaction.
     double stepLength = 0.6;    // Metropolis step length.
     double epsilon = 0.05;      // Tolerance for gradient descent.
     double lr = 0.1;            // Learning rate for gradient descent.
@@ -99,8 +99,8 @@ int main(int argv, char **argc)
     auto hamiltonian = std::make_unique<HarmonicOscillator>(omega);
 
     // Initialise SimpleGaussian by default
-    std::unique_ptr<class WaveFunction> wavefunction = std::make_unique<SimpleGaussian>(alpha); // Empty wavefunction pointer, since it uses "alpha" in its
-                                                                                                // constructor (can only be moved once).
+    std::unique_ptr<class WaveFunction> wavefunction = std::make_unique<SimpleGaussian>(alpha, beta); // Empty wavefunction pointer, since it uses "alpha" in its
+                                                                                                      // constructor (can only be moved once).
 
     // Empty solver pointer, since it uses "rng" in its constructor (can only be
     // moved once).

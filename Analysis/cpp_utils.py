@@ -62,7 +62,7 @@ def vmcRun(D=3, N=10, logMet=20, logEq=16, omega=1.0, alpha=0.5, stepLength=0.1,
 
     subprocess.run(args_run)
 
-def gradientRun(D=3, N=10, logMet=16, logEq=14, alpha=0.5, stepLength=0.1, epsilon=0.01, lr= 0.01, importance=False, analytical=True, interacting=False ,filename="gradientSearch.txt"):
+def gradientRun(D=3, N=10, logMet=16, logEq=14, alpha=0.5, stepLength=0.1, epsilon=0.01, lr= 0.01, importance=False, analytical=True, interacting=False, beta=1.0,  filename="gradientSearch.txt"):
     """
     This funcitons will run the gradient search for the best alpha parameter, as asked in the project description.
     Notice the regular VMC can run gradient descent, but this function will run the gradient search.
@@ -78,6 +78,7 @@ def gradientRun(D=3, N=10, logMet=16, logEq=14, alpha=0.5, stepLength=0.1, epsil
         logMet,
         logEq,
         alpha,
+        beta,
         stepLength,
         int(importance),
         int(analytical),
@@ -120,7 +121,7 @@ def timingRun(D=3, N=10, logMet=6, logEq=5, omega=1.0, alpha=0.5, stepLength=0.1
 
     subprocess.run(args_run)
 
-def interactRun(D=3, N=10, logMet=20, logEq=16, omega=1.0, alpha=0.5, stepLength=0.1, importance=False, analytical=True, timing=False, GD=False, filename="test.txt"):
+def interactRun(D=3, N=10, logMet=20, logEq=16, beta=1.0, alpha=0.5, stepLength=0.1, importance=False, analytical=True, timing=False, GD=False, filename="test.txt"):
     interact_path = interactPath()
     filename_path = dataPath(filename)
 
@@ -131,8 +132,8 @@ def interactRun(D=3, N=10, logMet=20, logEq=16, omega=1.0, alpha=0.5, stepLength
         N,
         logMet,
         logEq,
-        omega,
         alpha,
+        beta,
         stepLength,
         int(importance),
         int(analytical),

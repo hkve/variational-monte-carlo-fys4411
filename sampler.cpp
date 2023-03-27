@@ -38,7 +38,7 @@ Sampler::Sampler(
     m_cumulativeEnergy2 = 0;
     m_numberOfAcceptedSteps = 0;
 
-    m_numberOfParams = 1; // this should not be hard coded but we will change it later
+    m_numberOfParams = 2;
 
     m_cumulativeDerPsiE = std::vector<double>(m_numberOfParams, 0);
     m_cumulativedeltaPsi = std::vector<double>(m_numberOfParams, 0);
