@@ -17,8 +17,6 @@
 #include "particle.h"
 #include "sampler.h"
 
-using namespace std;
-
 int main(int argv, char **argc)
 {
     // Seed for the random number generator
@@ -40,22 +38,22 @@ int main(int argv, char **argc)
     bool gradientDescent = true;
     bool analytical = true;
     double D = 0.5;
-    string filename = "";
+    std::string filename = "";
 
     // If no arguments are given, show usage.
     if (argv == 1)
     {
-        cout << "Hello! Usage:" << endl;
-        cout << "./vmc #dims #particles #log10(metropolis-steps) #log10(equilibriation-steps) omega alpha stepLength importanceSampling? analytical? filename" << endl;
-        cout << "#dims, int: Number of dimensions" << endl;
-        cout << "#particles, int: Number of particles" << endl;
-        cout << "#log2(metropolis steps), int/double: log2 of number of steps, i.e. 6 gives 2^6 steps" << endl;
-        cout << "#log2(@-steps), int/double: log2 of number of equilibriation steps, i.e. 6 gives 2^6 steps" << endl;
-        cout << "omega, double: Trap frequency" << endl;
-        cout << "alpha, double: WF parameter for simple gaussian. Analytical sol alpha = omega/2" << endl;
-        cout << "stepLenght, double: How far should I move a particle at each MC cycle?" << endl;
-        cout << "analytical?, bool: If the analytical expression should be used. Defaults to true" << endl;
-        cout << "filename, string: If the results should be dumped to a file, give the file name. If none is given, a simple print is performed." << endl;
+        std::cout << "Hello! Usage:" << std::endl;
+        std::cout << "./vmc #dims #particles #log10(metropolis-steps) #log10(equilibriation-steps) omega alpha stepLength importanceSampling? analytical? filename" << std::endl;
+        std::cout << "#dims, int: Number of dimensions" << std::endl;
+        std::cout << "#particles, int: Number of particles" << std::endl;
+        std::cout << "#log2(metropolis steps), int/double: log2 of number of steps, i.e. 6 gives 2^6 steps" << std::endl;
+        std::cout << "#log2(@-steps), int/double: log2 of number of equilibriation steps, i.e. 6 gives 2^6 steps" << std::endl;
+        std::cout << "omega, double: Trap frequency" << std::endl;
+        std::cout << "alpha, double: WF parameter for simple gaussian. Analytical sol alpha = omega/2" << std::endl;
+        std::cout << "stepLenght, double: How far should I move a particle at each MC cycle?" << std::endl;
+        std::cout << "analytical?, bool: If the analytical expression should be used. Defaults to true" << std::endl;
+        std::cout << "filename, string: If the results should be dumped to a file, give the file name. If none is given, a simple print is performed." << std::endl;
         return 0;
     }
     if (argv >= 2)
@@ -87,7 +85,7 @@ int main(int argv, char **argc)
     auto hamiltonian = std::make_unique<HarmonicOscillator>(omega);
 
     // Initialise SimpleGaussian by default
-    std::unique_ptr<class WaveFunction> wavefunction = std::make_unique<SimpleGaussian>(alpha); // Empty wavefunction pointer, since it uses "alpha" in its constructor (can only be moved once).
+    std::unique_ptr<class WaveFunction> wavefunction = std::make_unique<SimpleGaussian>(alpha, beta); // Empty wavefunction pointer, since it uses "alpha" in its constructor (can only be moved once).
 
     // Empty solver pointer, since it uses "rng" in its constructor (can only be moved once).
     std::unique_ptr<class MonteCarlo> solver;
@@ -123,7 +121,7 @@ int main(int argv, char **argc)
     // Output information from the simulation, either as file or print
     if (filename == "")
     std:
-        cout << "You need a filename" << endl;
+        std::cout << "You need a filename" << std::endl;
     else
         sampler->WriteTimingToFiles(*system, filename, analytical, numberOfEquilibrationSteps, timelapse);
 

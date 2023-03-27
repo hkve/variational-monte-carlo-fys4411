@@ -25,7 +25,7 @@ def plot_energy_per_particle(filename="energy_per_particle", D=3, save=False):
                 print(f"Done N = {N}, alpha = {alpha} {i*len(alphas)+j+1}/{total}...")
                 print(f"Time elapsed: {time.time() - start}")
                 print("Expected time if linear: ", (time.time() - start)/(i*len(alphas)+j+1)*total / 60, "min")
-
+ 
     df = cpp_utils.vmcLoad(filename=filename)
 
     c = plot_utils.colors

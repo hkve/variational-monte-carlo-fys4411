@@ -5,6 +5,7 @@
 #include <vector>
 
 #include "Hamiltonians/harmonicoscillator.h"
+#include "Hamiltonians/anharmonicoscillator.h"
 #include "InitialStates/initialstate.h"
 #include "Math/random.h"
 #include "Solvers/metropolis.h"
@@ -54,6 +55,7 @@ int main(int argv, char **argc)
         cout << "#log2(metropolis steps), int/double: log2 of number of steps, i.e. 6 gives 2^6 steps" << endl;
         cout << "#log2(@-steps), int/double: log2 of number of equilibriation steps, i.e. 6 gives 2^6 steps" << endl;
         cout << "alpha, double: WF parameter for simple gaussian. Analytical sol alpha = omega/2" << endl;
+        cout << "beta, double: WF parameter for simple gaussian. Defaults to 1. If Eliptic Osci, use 2.82843" << endl;
         cout << "stepLenght, double: How far should I move a particle at each MC cycle?" << endl;
         cout << "Importantce sampling?, bool: If the Metropolis Hasting algorithm is used. Then stepLength serves as Delta t" << endl;
         cout << "analytical?, bool: If the analytical expression should be used. Defaults to true" << endl;
@@ -78,19 +80,21 @@ int main(int argv, char **argc)
     if (argv >= 6)
         alpha = (double)atof(argc[5]);
     if (argv >= 7)
-        stepLength = (double)atof(argc[6]);
+        beta = (double)atof(argc[6]);
     if (argv >= 8)
-        importanceSampling = (bool)atoi(argc[7]);
+        stepLength = (double)atof(argc[7]);
     if (argv >= 9)
-        analytical = (bool)atoi(argc[8]);
+        importanceSampling = (bool)atoi(argc[8]);
     if (argv >= 10)
-        lr = (double)atof(argc[9]) / (log(numberOfParticles) + 1);
+        analytical = (bool)atoi(argc[9]);
     if (argv >= 11)
-        epsilon = (double)atof(argc[10]);
+        lr = (double)atof(argc[10]) / (log(numberOfParticles) + 1);
     if (argv >= 12)
-        interacting = (bool)atoi(argc[11]);
+        epsilon = (double)atof(argc[11]);
     if (argv >= 13)
-        filename = argc[12];
+        interacting = (bool)atoi(argc[12]);
+    if (argv >= 14)
+        filename = argc[13];
 
     // The random engine can also be built without a seed
     auto rng = std::make_unique<Random>(seed);
@@ -101,6 +105,12 @@ int main(int argv, char **argc)
 
     // Construct a unique pointer to a new System
     auto hamiltonian = std::make_unique<HarmonicOscillator>(omega);
+
+    if (beta != 1.0)
+    {
+        double gamma = beta;
+        auto hamiltonian = std::make_unique<AnharmonicOscillator>(gamma);
+    }
 
     // Initialise SimpleGaussian by default
     std::unique_ptr<class WaveFunction> wavefunction;
@@ -114,6 +124,7 @@ int main(int argv, char **argc)
     {
         wavefunction = std::make_unique<InteractingGaussian>(
             alpha,
+            beta,
             interactionTerm,
             numberOfParticles);
     }

@@ -5,6 +5,8 @@
 #include <vector>
 
 #include "Hamiltonians/harmonicoscillator.h"
+#include "Hamiltonians/anharmonicoscillator.h"
+
 #include "InitialStates/initialstate.h"
 #include "Math/random.h"
 #include "Solvers/metropolis.h"
@@ -28,6 +30,7 @@ int main(int argv, char **argc)
     unsigned int numberOfEquilibrationSteps = (unsigned int)pow(2, 20);
     double omega = 1.0;                                 // Oscillator frequency.
     double alpha = omega / 2.0;                         // Variational parameter. If using gradient descent, this is the initial guess.
+    double beta = 2.82843;                              // Beta will be 1 unless we are using the interacting wave function. Then it is 2.82843.
     double stepLength = 0.1;                            // Metropolis step length.
     double epsilon = 0.05;                              // Tolerance for gradient descent.
     double lr = 0.1;                                    // Learning rate for gradient descent.
@@ -50,8 +53,8 @@ int main(int argv, char **argc)
         cout << "#particles, int: Number of particles" << endl;
         cout << "#log2(metropolis steps), int/double: log2 of number of steps, i.e. 6 gives 2^6 steps" << endl;
         cout << "#log2(@-steps), int/double: log2 of number of equilibriation steps, i.e. 6 gives 2^6 steps" << endl;
-        cout << "omega, double: Trap frequency" << endl;
         cout << "alpha, double: WF parameter for simple gaussian. Analytical sol alpha = omega/2" << endl;
+        cout << "beta, double: WF parameter for interacting gaussian. For harmonic trap, use beta=1, else beta=2.82843" << endl;
         cout << "stepLenght, double: How far should I move a particle at each MC cycle?" << endl;
         cout << "Importantce sampling?, bool: If the Metropolis Hasting algorithm is used. Then stepLength serves as Delta t" << endl;
         cout << "analytical?, bool: If the analytical expression should be used. Defaults to true" << endl;
@@ -72,9 +75,9 @@ int main(int argv, char **argc)
     if (argv >= 5)
         numberOfEquilibrationSteps = (unsigned int)pow(2, atof(argc[4]));
     if (argv >= 6)
-        omega = (double)atof(argc[5]);
+        alpha = (double)atof(argc[5]);
     if (argv >= 7)
-        alpha = (double)atof(argc[6]);
+        beta = (double)atof(argc[6]);
     if (argv >= 8)
         stepLength = (double)atof(argc[7]);
     if (argv >= 9)
@@ -96,9 +99,16 @@ int main(int argv, char **argc)
     // Construct a unique pointer to a new System
     auto hamiltonian = std::make_unique<HarmonicOscillator>(omega);
 
+    if (beta != 1.0)
+    {
+        double gamma = beta;
+        auto hamiltonian = std::make_unique<AnharmonicOscillator>(gamma);
+    }
+
     // Initialise Interacting Gaussian by default
     std::unique_ptr<class WaveFunction> wavefunction = std::make_unique<InteractingGaussian>(
         alpha,
+        beta,
         interactionTerm,
         numberOfParticles); // Empty wavefunction pointer, since it uses "alpha" in its
                             // constructor (can only be moved once).
@@ -127,6 +137,9 @@ int main(int argv, char **argc)
         std::move(solver),
         // Move the vector of particles to system
         std::move(particles));
+
+    // TO SAVE SAMPLES RUN THE FOLLOWING::::
+    // system->saveSamples("interact_blocking_samples.dat", 0);
 
     // Run steps to equilibrate particles
     auto acceptedEquilibrationSteps =

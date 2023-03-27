@@ -28,7 +28,7 @@ double particle_r2(Particle &p)
     Calculate r^2 for particle p
     */
     static const int numberOfDimensions = p.getNumberOfDimensions();
-    double ret = 0;
+    double ret = 0; // ret = return value
     for (int q = 0; q < numberOfDimensions; q++)
     {
         ret += p.getPosition().at(q) * p.getPosition().at(q);

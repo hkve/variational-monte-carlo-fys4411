@@ -2,20 +2,20 @@
 #include <cassert>
 #include <iostream>
 
-#include "harmonicoscillator.h"
+#include "anharmonicoscillator.h"
 #include "../particle.h"
 #include "../WaveFunctions/wavefunction.h"
 
 using std::cout;
 using std::endl;
 
-HarmonicOscillator::HarmonicOscillator(double omega)
+AnharmonicOscillator::AnharmonicOscillator(double gamma)
 {
-    assert(omega > 0);
-    m_omega = omega;
+    m_gamma = gamma;
+    assert(m_gamma == 2.82843);
 }
 
-double HarmonicOscillator::computeLocalEnergy(
+double AnharmonicOscillator::computeLocalEnergy(
     class WaveFunction &waveFunction,
     std::vector<std::unique_ptr<class Particle>> &particles)
 {
@@ -27,24 +27,25 @@ double HarmonicOscillator::computeLocalEnergy(
     int num_particles = particles.size();
     int numberOfDimensions = particles.at(0)->getNumberOfDimensions();
     // double psi_T = waveFunction.evaluate(particles);
-    double r2_sum = 0;
+    double r2_xy = 0;
+    double r2_z = 0;
     double r_q = 0;
-    // for (int k = 0; k < num_particles; k++)
-    //{
-    //     Particle &particle = *particles.at(k);
-    //     for (int q = 0; q < numberOfDimensions; q++)
-    //     {
-    //         r_q = particle.getPosition().at(q);
-    //         r2_sum += r_q * r_q;
-    //     }
-    // }
+
     for (int k = 0; k < num_particles; k++)
     {
-        Particle particle = *particles.at(k);
-        r2_sum += particle_r2(particle);
+        Particle &particle = *particles.at(k);
+        for (int q = 0; q < numberOfDimensions - 1; q++)
+        {
+            r_q = particle.getPosition().at(q);
+            r2_xy += r_q * r_q;
+        }
+        r_q = particle.getPosition().at(numberOfDimensions - 1);
+        r2_z += r_q * r_q;
     }
 
-    double potentialEnergy = 0.5 * r2_sum; // 0.5 * omega^2 * r^2 but omega = 1 always!!
+    double potentialEnergy = 0.5 * (r2_xy + m_gamma * m_gamma * r2_z);
+
+    // kinectic energy does not change with anharmonic oscillator
     double kineticEnergy = -0.5 * waveFunction.computeDoubleDerivative(particles);
 
     return kineticEnergy + potentialEnergy;

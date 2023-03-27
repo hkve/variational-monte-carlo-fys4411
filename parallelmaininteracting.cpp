@@ -27,8 +27,8 @@ int main(int argv, char **argc)
     unsigned int numberOfMetropolisSteps = (unsigned int)pow(2, 20);
     unsigned int numberOfEquilibrationSteps = (unsigned int)pow(2, 20);
     double omega = 1.0;                                 // Oscillator frequency.
-    double alpha = omega / 2.0;                         // Variational parameter. If using gradient
-                                                        // descent, this is the initial guess.
+    double alpha = omega / 2.0;                         // Variational parameter. If using gradient descent, this is the initial guess.
+    double beta = 2.82843;                              // This is different from 1.0 as we use interaction.
     double stepLength = 0.1;                            // Metropolis step length.
     double epsilon = 0.05;                              // Tolerance for gradient descent.
     double lr = 0.1;                                    // Learning rate for gradient descent.
@@ -92,7 +92,7 @@ int main(int argv, char **argc)
     {
         int thread_id = omp_get_thread_num();
         filename = filename + "_" + to_string(thread_id) + ".txt";
-
+        filename_samples = filename + "_blocking_samples.dat";
         std::cout << "STARTING WALK FROM THREAD " << thread_id << std::endl;
 
         // Seed for the random number generator
@@ -110,6 +110,7 @@ int main(int argv, char **argc)
         // Initialise Interacting Gaussian by default
         std::unique_ptr<class WaveFunction> wavefunction = std::make_unique<InteractingGaussian>(
             alpha,
+            beta,
             interactionTerm,
             numberOfParticles); // Empty wavefunction pointer, since it uses "alpha" in its
                                 // constructor (can only be moved once).
@@ -138,6 +139,9 @@ int main(int argv, char **argc)
             std::move(solver),
             // Move the vector of particles to system
             std::move(particles));
+
+        // TO SAVE SAMPLES RUN THE FOLLOWING::::
+        // system->saveSamples(filename_samples, 0);
 
         // Run steps to equilibrate particles
         auto acceptedEquilibrationSteps =

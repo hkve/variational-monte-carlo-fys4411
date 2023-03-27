@@ -4,14 +4,14 @@
 
 #include "hamiltonian.h"
 
-class HarmonicOscillator : public Hamiltonian
+class AnharmonicOscillator : public Hamiltonian
 {
 public:
-    HarmonicOscillator(double omega);
+    AnharmonicOscillator(double gamma);
     double computeLocalEnergy(
         class WaveFunction &waveFunction,
         std::vector<std::unique_ptr<class Particle>> &particles);
 
 private:
-    double m_omega;
+    double m_gamma;
 };

@@ -109,7 +109,7 @@ std::unique_ptr<class Sampler> System::optimizeMetropolis(
     sampler = system.runMetropolisSteps(stepLength, numberOfMetropolisSteps);
 
     alpha = getWaveFunctionParameters()[0];
-    beta = getWaveFunctionParameters()[1];
+    beta = getWaveFunctionParameters()[1]; // this might be useless since we are not asked to optimize beta
     std::vector<double> parameters = getWaveFunctionParameters();
     sampler->writeGradientSearchToFile(system, filename, alpha_0, epoch, alpha, beta_0, beta);
 
@@ -117,7 +117,7 @@ std::unique_ptr<class Sampler> System::optimizeMetropolis(
 
     int n_params = m_waveFunction->getNumberOfParameters();
 
-    for (int i = 0; i < n_params; i++)
+    for (int i = 0; i < n_params - 1; i++) // we do not want to optimize beta because minima is given to us already. But if we want, the functionality is there!
     {
       parameters[i] -= learningRate * m_energyDerivative[i];
 
