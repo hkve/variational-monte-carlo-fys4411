@@ -68,7 +68,7 @@ double SimpleGaussian::computeDoubleDerivative(std::vector<std::unique_ptr<class
      * Schrödinger equation to see how the two are related).
      */
     int num_particles = particles.size();
-    int numberOfDimensions = particles.at(0)->getNumberOfDimensions();
+    int numberOfDimensions = particles.at(0)->m_numberOfDimensions;
     double alpha = m_parameters.at(0);
 
     double r2_sum = 0;
@@ -102,12 +102,12 @@ double SimpleGaussian::evaluate_w(int proposed_particle_idx, class Particle &pro
 
 void SimpleGaussian::quantumForce(std::vector<std::unique_ptr<class Particle>> &particles, Particle &particle, std::vector<double> &force)
 {
-    static const int numberOfDimensions = particle.getNumberOfDimensions(); // static to avoid redeclaration between calls
+    static const int numberOfDimensions = particle.m_numberOfDimensions;
     double alpha = m_parameters.at(0);
 
     for (int q = 0; q < numberOfDimensions; q++)
     {
-        force.at(q) = -4.0 * alpha * particle.m_position.at(q);
+        force.at(q) = -4.0 * alpha * particle.m_position[q];
     }
 }
 
@@ -126,7 +126,7 @@ double SimpleGaussianNumerical::evaluateSingleParticle(class Particle &particle)
 double SimpleGaussianNumerical::computeDoubleDerivative(std::vector<std::unique_ptr<class Particle>> &particles)
 {
     int num_particles = particles.size();
-    int numberOfDimensions = particles.at(0)->getNumberOfDimensions();
+    int numberOfDimensions = particles.at(0)->m_numberOfDimensions;
     double der_sum = 0;
     double r_q, gx, gxpdx, gxmdx, der;
 
@@ -137,7 +137,7 @@ double SimpleGaussianNumerical::computeDoubleDerivative(std::vector<std::unique_
         gx = evaluateSingleParticle(particle); // gx = g(x) this is the value of the wave function at the current position
         for (int q = 0; q < numberOfDimensions; q++)
         {
-            r_q = particle.m_position.at(q);
+            r_q = particle.m_position[q];
             particle.adjustPosition(m_dx, q);               // adjust the position of the particle by dx in the qth dimension
             gxpdx = evaluateSingleParticle(particle);       // gxpdx = g(x + dx) this is the value of the wave function at the new position
             particle.adjustPosition(-2 * m_dx, q);          // adjust the position of the particle by -2dx in the qth dimension

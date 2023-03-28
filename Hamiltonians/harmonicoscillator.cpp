@@ -25,7 +25,7 @@ double HarmonicOscillator::computeLocalEnergy(
      * to get the Laplacian of the wave function.
      * */
     int num_particles = particles.size();
-    int numberOfDimensions = particles.at(0)->getNumberOfDimensions();
+    int numberOfDimensions = particles.at(0)->m_numberOfDimensions;
     // double psi_T = waveFunction.evaluate(particles);
     double r2_sum = 0;
     double r_q = 0;
