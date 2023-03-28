@@ -58,7 +58,7 @@ void Sampler::sample(bool acceptedStep, System *system)
     m_stepNumber++;
     m_numberOfAcceptedSteps += acceptedStep;
 
-    for (int i = 0; i < m_numberOfParams; i++)
+    for (int i = 0; i < m_numberOfParams - 1; i++) // -1 because we don't want to sample the last parameter
     {
         m_deltaPsi.at(i) = system->computeParamDerivative(i);
         m_derPsiE.at(i) = m_deltaPsi.at(i) * localEnergy;
@@ -172,7 +172,7 @@ void Sampler::computeAverages()
     m_energy_std = sqrt(m_energy_variance);
     m_acceptRatio = ((double)m_numberOfAcceptedSteps) / ((double)m_numberOfMetropolisSteps);
 
-    for (int i = 0; i < m_numberOfParams; i++)
+    for (int i = 0; i < m_numberOfParams - 1; i++) // -1 because we don't want to include the last parameter
     {
         m_derPsiE[i] = m_cumulativeDerPsiE[i] / m_numberOfMetropolisSteps;
         m_deltaPsi[i] = m_cumulativedeltaPsi[i] / m_numberOfMetropolisSteps;
@@ -280,7 +280,7 @@ void Sampler::writeGradientSearchToFile(System &system, std::string filename, do
 
 std::vector<double> Sampler::getEnergyDerivative()
 {
-    for (int i = 0; i < m_numberOfParams; i++)
+    for (int i = 0; i < m_numberOfParams - 1; i++) // -1 because we don't want to include the last parameter
     {
         m_energyDerivative[i] = 2 * (m_derPsiE[i] - m_deltaPsi[i] * m_energy);
     }

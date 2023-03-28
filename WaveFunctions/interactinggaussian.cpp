@@ -26,6 +26,7 @@ InteractingGaussian::InteractingGaussian(double alpha, double beta, double a, in
 
 double InteractingGaussian::evaluate(std::vector<std::unique_ptr<class Particle>> &particles)
 {
+
     /* You need to implement a Gaussian wave function here. The positions of
      * the particles are accessible through the particle[i]->getPosition()
      * function.
@@ -34,36 +35,87 @@ double InteractingGaussian::evaluate(std::vector<std::unique_ptr<class Particle>
     double alpha = m_parameters.at(0);
     double beta = m_parameters.at(1);
     double a = m_interactionTerm; // renaming for simplicity in formulas
-
-    for (int i = 0; i < m_numberOfParticles; i++)
-    {
-        Particle particle = *particles.at(i);
-        r2 += particle_r2(particle);
-        // beta correction to r2. Notice this lets us use the same r2, even if beta is not 1
-        r2 += (particle.getPosition().at(2) * particle.getPosition().at(2)) * (beta - 1);
-    }
-
-    double gaussian = std::exp(-alpha * r2); // Notice this includes beta.
-
-    // now we have interaction, so instead of just the gaussian, we have to multiply by the interaction term
     double interaction = 1;
-    double norm_rij = 0; // norm_r_ij is the distance between particles i and j
+
+    // Precompute the distance matrix
+    // This is a matrix of the distances between particles i and j
+    // The matrix is symmetric, so we only need to compute the upper triangle
+
+    std::vector<std::vector<double>> dist_matrix(m_numberOfParticles, std::vector<double>(m_numberOfParticles, 0.0));
 
     for (int i = 0; i < m_numberOfParticles; i++)
     {
         Particle particle_i = *particles.at(i);
-        for (int j = i + 1; j < m_numberOfParticles; j++) // we only need to loop over the particles with higher index than i because of the symmetry of the interaction
+        for (int j = i + 1; j < m_numberOfParticles; j++)
         {
             Particle particle_j = *particles.at(j);
-            norm_rij = std::sqrt(particle_r2(particle_i, particle_j)); // there might be a more efficient way to do this, using u = ln(f(r_ij)).
-            if (norm_rij > a)
+            double dist = std::sqrt(particle_r2(particle_i, particle_j));
+            dist_matrix[i][j] = dist;
+            dist_matrix[j][i] = dist;
+
+            if (dist > a)
             {
-                interaction *= (1.0 - a / norm_rij);
+                interaction *= (1.0 - a / dist);
             }
         }
+        // now the diagonal elements of the matrix are the vector r_i
+        r2 += particle_r2(particle_i);
+        // beta correction
+        r2 += (particle_i.getPosition().at(2) * particle_i.getPosition().at(2)) * (beta - 1);
     }
 
+    double gaussian = std::exp(-alpha * r2); // Notice this includes beta.
     return gaussian * interaction;
+}
+
+double InteractingGaussian::evaluate_w(int proposed_particle_idx, class Particle &proposed_particle, class Particle &old_particle, std::vector<std::unique_ptr<class Particle>> &particles)
+{
+    /*
+     This is the wave function ratio for the Metropolis algorithm.
+     It is a clever way to avoid having to evaluate the wave function for all particles at each step.
+     The gaussian part is still present, but we also have to recalculate every term where the proposed particle is present (one N product with f_ij)
+    */
+    static const int numberOfDimensions = particles.at(0)->getNumberOfDimensions(); // static to avoid redeclaration between calls
+    static const double a = m_interactionTerm;
+    double alpha = m_parameters.at(0);
+    double beta = m_parameters.at(1);
+
+    double r2_proposed, r2_old;
+    r2_proposed = 0;
+    r2_old = 0;
+
+    r2_proposed = particle_r2(proposed_particle);
+    r2_old = particle_r2(old_particle);
+
+    // beta corrections to r2. Notice this lets us use the same r2, even if beta is not 1
+    r2_proposed += (proposed_particle.getPosition().at(2) * proposed_particle.getPosition().at(2)) * (beta - 1);
+    r2_old += (old_particle.getPosition().at(2) * old_particle.getPosition().at(2)) * (beta - 1);
+
+    double gaussian = std::exp(-2.0 * alpha * (r2_proposed - r2_old)); // Same as non-interactive
+
+    double interaction = 1;
+    double r_gj_prime = 0; // |r_g - r_j| in proposed R configuration
+    double r_gj = 0;       // |r_g - r_j| in old R configuration
+    double delta = 0;      // If any particle distances are less than a, evalute interaction term to 0
+
+    // proposed_idx != i product. Divided into two loops to avoid if statments
+    for (int i = 0; i < proposed_particle_idx; i++)
+    {
+        r_gj_prime = std::sqrt(particle_r2(proposed_particle, *particles.at(i)));
+        r_gj = std::sqrt(particle_r2(old_particle, *particles.at(i)));
+        delta = (r_gj_prime > a) * (r_gj > a);
+        interaction *= (1.0 - a / r_gj_prime) / (1.0 - a / r_gj) * delta; // ratio for relative r_gj distance
+    }
+    // Same as above but for the indicies after proposed_particle_idx
+    for (int i = proposed_particle_idx + 1; i < m_numberOfParticles; i++)
+    {
+        r_gj_prime = std::sqrt(particle_r2(proposed_particle, *particles.at(i)));
+        r_gj = std::sqrt(particle_r2(old_particle, *particles.at(i)));
+        delta = (r_gj_prime > a) * (r_gj > a);
+        interaction *= (1.0 - a / r_gj_prime) / (1.0 - a / r_gj) * delta;
+    }
+
+    return gaussian * interaction * interaction; // Dont forget to square the interaction part :)
 }
 
 double InteractingGaussian::computeParamDerivative(std::vector<std::unique_ptr<class Particle>> &particles, int parameterIndex)
@@ -209,56 +261,6 @@ double InteractingGaussian::computeDoubleDerivative(std::vector<std::unique_ptr<
     double interaction_double_derivative = term1 + term2 + term3;                                                                    // Adding the contribution from the three TB terms
 
     return gaussian_double_derivative + interaction_double_derivative;
-}
-
-double InteractingGaussian::evaluate_w(int proposed_particle_idx, class Particle &proposed_particle, class Particle &old_particle, std::vector<std::unique_ptr<class Particle>> &particles)
-{
-    /*
-     This is the wave function ratio for the Metropolis algorithm.
-     It is a clever way to avoid having to evaluate the wave function for all particles at each step.
-     The gaussian part is still present, but we also have to recalculate every term where the proposed particle is present (one N product with f_ij)
-    */
-    static const int numberOfDimensions = particles.at(0)->getNumberOfDimensions(); // static to avoid redeclaration between calls
-    static const double a = m_interactionTerm;
-    double alpha = m_parameters.at(0);
-    double beta = m_parameters.at(1);
-
-    double r2_proposed, r2_old;
-    r2_proposed = 0;
-    r2_old = 0;
-
-    r2_proposed = particle_r2(proposed_particle);
-    r2_old = particle_r2(old_particle);
-
-    // beta corrections to r2. Notice this lets us use the same r2, even if beta is not 1
-    r2_proposed += (proposed_particle.getPosition().at(2) * proposed_particle.getPosition().at(2)) * (beta - 1);
-    r2_old += (old_particle.getPosition().at(2) * old_particle.getPosition().at(2)) * (beta - 1);
-
-    double gaussian = std::exp(-2.0 * alpha * (r2_proposed - r2_old)); // Same as non-interactive
-
-    double interaction = 1;
-    double r_gj_prime = 0; // |r_g - r_j| in proposed R configuration
-    double r_gj = 0;       // |r_g - r_j| in old R configuration
-    double delta = 0;      // If any particle distances are less than a, evalute interaction term to 0
-
-    // proposed_idx != i product. Divided into two loops to avoid if statments
-    for (int i = 0; i < proposed_particle_idx; i++)
-    {
-        r_gj_prime = std::sqrt(particle_r2(proposed_particle, *particles.at(i)));
-        r_gj = std::sqrt(particle_r2(old_particle, *particles.at(i)));
-        delta = (r_gj_prime > a) * (r_gj > a);
-        interaction *= (1.0 - a / r_gj_prime) / (1.0 - a / r_gj) * delta; // ratio for relative r_gj distance
-    }
-    // Same as above but for the indicies after proposed_particle_idx
-    for (int i = proposed_particle_idx + 1; i < m_numberOfParticles; i++)
-    {
-        r_gj_prime = std::sqrt(particle_r2(proposed_particle, *particles.at(i)));
-        r_gj = std::sqrt(particle_r2(old_particle, *particles.at(i)));
-        delta = (r_gj_prime > a) * (r_gj > a);
-        interaction *= (1.0 - a / r_gj_prime) / (1.0 - a / r_gj) * delta;
-    }
-
-    return gaussian * interaction * interaction; // Dont forget to square the interaction part :)
 }
 
 // Notice that now we need to pass the whole vector of particles, because we need to compute the interaction term.

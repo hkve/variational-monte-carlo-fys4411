@@ -120,7 +120,6 @@ std::unique_ptr<class Sampler> System::optimizeMetropolis(
     for (int i = 0; i < n_params - 1; i++) // we do not want to optimize beta because minima is given to us already. But if we want, the functionality is there!
     {
       parameters[i] -= learningRate * m_energyDerivative[i];
-
       std::cout << "parameters post update: " << parameters[i] << "\n";
       std::cout << "m_energyDerivative: " << m_energyDerivative[i] << "\n";
       gradient += m_energyDerivative[i];
