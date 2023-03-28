@@ -10,12 +10,14 @@ public:
     void resetPosition();
     void saveEquilibrationPosition();
     void resetEquilibrationPosition();
-    std::vector<double> getPosition() { return m_position; }
-    unsigned int getNumberOfDimensions() { return m_numberOfDimensions; }
+    std::vector<double> m_position = std::vector<double>();
+    int m_numberOfDimensions = 0;
+
+    // std::vector<double> getPosition() { return m_position; } // using this is slower then using m_position directly because it creates a copy of the vector each time.
+    // unsigned int getNumberOfDimensions() { return m_numberOfDimensions; }
 
 private:
-    unsigned int m_numberOfDimensions = 0;
-    std::vector<double> m_position = std::vector<double>();
+    // unsigned int m_numberOfDimensions = 0;
     std::vector<double> m_initialPosition = std::vector<double>(); // Save initial position to reset in Gradient Descent.
     std::vector<double> m_EquilibrationPosition = std::vector<double>();
 };

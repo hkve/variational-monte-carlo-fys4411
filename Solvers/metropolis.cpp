@@ -25,7 +25,7 @@ bool Metropolis::step(
      */
 
     int numberOfParticles = particles.size();
-    int numberOfDimensions = particles.at(0)->getNumberOfDimensions();
+    int numberOfDimensions = particles.at(0)->m_numberOfDimensions;
 
     // double Psi_old = waveFunction.evaluate(particles);
 
