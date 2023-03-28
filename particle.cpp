@@ -71,7 +71,7 @@ void particle_add_rdiff(std::vector<double> &diff, Particle &p1, Particle &p2, d
     */
     static const int numberOfDimensions = p1.m_numberOfDimensions;
     for (int i = 0; i < numberOfDimensions; i++)
-        diff.at(i) += scale * (p1.m_position[i] - p2.m_position[i]);
+        diff[i] += scale * (p1.m_position[i] - p2.m_position[i]);
 }
 
 void Particle::saveEquilibrationPosition()

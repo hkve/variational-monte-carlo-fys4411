@@ -39,7 +39,7 @@ int main(int argv, char **argc)
     bool gradientDescent = 1;
     bool analytical = true;
     double D = 0.5;
-    string filename = "";
+    string filename = ".txt";
 
     // If no arguments are given, show usage.
     if (argv == 1)

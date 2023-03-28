@@ -32,7 +32,7 @@ double SimpleGaussian::evaluate(std::vector<std::unique_ptr<class Particle>> &pa
 
     for (int i = 0; i < num_particles; i++)
     {
-        Particle particle = *particles.at(i);
+        Particle &particle = *particles.at(i);
         r2 += particle_r2(particle);
     }
 
@@ -50,7 +50,7 @@ double SimpleGaussian::computeParamDerivative(std::vector<std::unique_ptr<class 
 
     for (int k = 0; k < num_particles; k++)
     {
-        Particle particle = *particles.at(k);
+        Particle &particle = *particles.at(k);
         r2_sum += particle_r2(particle);
     }
     // notice this does not depend on the param as it is divided by the WF.
@@ -75,7 +75,7 @@ double SimpleGaussian::computeDoubleDerivative(std::vector<std::unique_ptr<class
 
     for (int k = 0; k < num_particles; k++)
     {
-        Particle particle = *particles.at(k);
+        Particle &particle = *particles.at(k);
         r2_sum += particle_r2(particle);
     }
 

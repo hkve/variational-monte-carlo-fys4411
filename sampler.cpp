@@ -60,10 +60,10 @@ void Sampler::sample(bool acceptedStep, System *system)
 
     for (int i = 0; i < m_numberOfParams - 1; i++) // -1 because we don't want to sample the last parameter
     {
-        m_deltaPsi.at(i) = system->computeParamDerivative(i);
-        m_derPsiE.at(i) = m_deltaPsi.at(i) * localEnergy;
-        m_cumulativedeltaPsi.at(i) += m_deltaPsi.at(i);
-        m_cumulativeDerPsiE.at(i) += m_derPsiE.at(i);
+        m_deltaPsi[i] = system->computeParamDerivative(i);
+        m_derPsiE[i] = m_deltaPsi[i] * localEnergy;
+        m_cumulativedeltaPsi[i] += m_deltaPsi[i];
+        m_cumulativeDerPsiE[i] += m_derPsiE[i];
     }
 }
 

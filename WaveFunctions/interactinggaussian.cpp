@@ -45,10 +45,10 @@ double InteractingGaussian::evaluate(std::vector<std::unique_ptr<class Particle>
 
     for (int i = 0; i < m_numberOfParticles; i++)
     {
-        Particle particle_i = *particles.at(i);
+        Particle &particle_i = *particles.at(i);
         for (int j = i + 1; j < m_numberOfParticles; j++)
         {
-            Particle particle_j = *particles.at(j);
+            Particle &particle_j = *particles.at(j);
             double dist = std::sqrt(particle_r2(particle_i, particle_j));
             dist_matrix[i][j] = dist;
             dist_matrix[j][i] = dist;
@@ -133,7 +133,7 @@ double InteractingGaussian::computeParamDerivative(std::vector<std::unique_ptr<c
     double rz2 = 0;
     for (int k = 0; k < m_numberOfParticles; k++)
     {
-        Particle particle = *particles.at(k);
+        Particle &particle = *particles.at(k);
         r2 += particle_r2(particle);
         // beta correction to r2. Notice this lets us use the same r2, even if beta is not 1
         rz2 = (particle.m_position[2] * particle.m_position[2]);
@@ -211,7 +211,7 @@ double InteractingGaussian::computeDoubleDerivative(std::vector<std::unique_ptr<
         std::vector<double> v(numberOfDimensions, 0); // For each k, reset v vector
 
         // first we compute the double derivative of the gaussian part
-        Particle particle_k = *particles.at(k);
+        Particle &particle_k = *particles.at(k);
 
         // Add r_k^2 for OB term
         r2_sum_OB += particle_r2(particle_k);
@@ -225,7 +225,7 @@ double InteractingGaussian::computeDoubleDerivative(std::vector<std::unique_ptr<
         // Sum over j != k, divded into two parts to avoid if-statement. First do all particles up to k
         for (int j = 0; j < k; j++)
         {
-            Particle particle_j = *particles.at(j);
+            Particle &particle_j = *particles.at(j);
             r_kj_length = std::sqrt(particle_r2(particle_k, particle_j)); // r_kj = |r_k - r_j|
 
             u_p_kj = (r_kj_length > a) ? u_p(r_kj_length) : 0;   // Calculate u'(r_kj) if r_kj is less than a. Else evalute to 0
@@ -241,7 +241,7 @@ double InteractingGaussian::computeDoubleDerivative(std::vector<std::unique_ptr<
         // The rest of the particles, from k+1 to N. The giblets of the loop is the same.
         for (int j = k + 1; j < m_numberOfParticles; j++)
         {
-            Particle particle_j = *particles.at(j);
+            Particle &particle_j = *particles.at(j);
             r_kj_length = std::sqrt(particle_r2(particle_k, particle_j));
 
             u_p_kj = (r_kj_length > a) ? u_p(r_kj_length) : 0;

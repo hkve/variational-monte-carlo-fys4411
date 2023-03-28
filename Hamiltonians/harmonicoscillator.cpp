@@ -32,7 +32,7 @@ double HarmonicOscillator::computeLocalEnergy(
 
     for (int k = 0; k < num_particles; k++)
     {
-        Particle particle = *particles.at(k);
+        Particle &particle = *particles.at(k);
         r2_sum += particle_r2(particle);
     }
 
