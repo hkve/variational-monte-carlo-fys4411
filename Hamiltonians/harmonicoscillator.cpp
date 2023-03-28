@@ -29,15 +29,7 @@ double HarmonicOscillator::computeLocalEnergy(
     // double psi_T = waveFunction.evaluate(particles);
     double r2_sum = 0;
     double r_q = 0;
-    // for (int k = 0; k < num_particles; k++)
-    //{
-    //     Particle &particle = *particles.at(k);
-    //     for (int q = 0; q < numberOfDimensions; q++)
-    //     {
-    //         r_q = particle.getPosition().at(q);
-    //         r2_sum += r_q * r_q;
-    //     }
-    // }
+
     for (int k = 0; k < num_particles; k++)
     {
         Particle particle = *particles.at(k);

@@ -61,7 +61,7 @@ double InteractingGaussian::evaluate(std::vector<std::unique_ptr<class Particle>
         // now the diagonal elements of the matrix are the vector r_i
         r2 += particle_r2(particle_i);
         // beta correction
-        r2 += (particle_i.getPosition().at(2) * particle_i.getPosition().at(2)) * (beta - 1);
+        r2 += (particle_i.m_position.at(2) * particle_i.m_position.at(2)) * (beta - 1);
     }
 
     double gaussian = std::exp(-alpha * r2); // Notice this includes beta.
@@ -88,8 +88,8 @@ double InteractingGaussian::evaluate_w(int proposed_particle_idx, class Particle
     r2_old = particle_r2(old_particle);
 
     // beta corrections to r2. Notice this lets us use the same r2, even if beta is not 1
-    r2_proposed += (proposed_particle.getPosition().at(2) * proposed_particle.getPosition().at(2)) * (beta - 1);
-    r2_old += (old_particle.getPosition().at(2) * old_particle.getPosition().at(2)) * (beta - 1);
+    r2_proposed += (proposed_particle.m_position.at(2) * proposed_particle.m_position.at(2)) * (beta - 1);
+    r2_old += (old_particle.m_position.at(2) * old_particle.m_position.at(2)) * (beta - 1);
 
     double gaussian = std::exp(-2.0 * alpha * (r2_proposed - r2_old)); // Same as non-interactive
 
@@ -136,7 +136,7 @@ double InteractingGaussian::computeParamDerivative(std::vector<std::unique_ptr<c
         Particle particle = *particles.at(k);
         r2 += particle_r2(particle);
         // beta correction to r2. Notice this lets us use the same r2, even if beta is not 1
-        rz2 = (particle.getPosition().at(2) * particle.getPosition().at(2));
+        rz2 = (particle.m_position.at(2) * particle.m_position.at(2));
         r2 += rz2 * (beta - 1);
     }
     if (parameterIndex == 0)
@@ -179,7 +179,7 @@ void InteractingGaussian::grad_phi_ratio(std::vector<double> &v, Particle &parti
     */
     static const int numberOfDimensions = particle.getNumberOfDimensions();
     for (int i = 0; i < numberOfDimensions; i++)
-        v.at(i) = -2 * alpha * particle.getPosition().at(i);
+        v.at(i) = -2 * alpha * particle.m_position.at(i);
 
     // beta correction to gradient.
     v.at(2) *= beta;
@@ -217,7 +217,7 @@ double InteractingGaussian::computeDoubleDerivative(std::vector<std::unique_ptr<
         r2_sum_OB += particle_r2(particle_k);
 
         // beta correction to r2. Notice this lets us use the same r2, even if beta is not 1
-        r2_sum_OB += (particle_k.getPosition().at(2) * particle_k.getPosition().at(2)) * (beta - 1);
+        r2_sum_OB += (particle_k.m_position.at(2) * particle_k.m_position.at(2)) * (beta - 1);
 
         // Calculate OB gradient and wf ratio
         grad_phi_ratio(grad_phi_ratio_k, particle_k, alpha, beta);
@@ -273,11 +273,11 @@ void InteractingGaussian::quantumForce(std::vector<std::unique_ptr<class Particl
 
     for (int q = 0; q < numberOfDimensions; q++)
     {
-        force.at(q) = -4.0 * alpha * particle.getPosition().at(q); // analytic derivative wrt r_q for the gaussian part
+        force.at(q) = -4.0 * alpha * particle.m_position.at(q); // analytic derivative wrt r_q for the gaussian part
     }
 
     // beta correction
-    force.at(2) += -4.0 * alpha * particle.getPosition().at(2) * (1 - beta);
+    force.at(2) += -4.0 * alpha * particle.m_position.at(2) * (1 - beta);
 
     // Now we need to add the interaction term
     double r_ij, r_ij_q, norm_rij;
@@ -290,7 +290,7 @@ void InteractingGaussian::quantumForce(std::vector<std::unique_ptr<class Particl
         {
             for (int q = 0; q < numberOfDimensions; q++)
             {
-                r_ij_q = particle.getPosition().at(q) - other_particle.getPosition().at(q); // NOTICE THIS IS INEFFICIENT, WE ALREADY COMPUTED IT BUT WAS NOT STORED
+                r_ij_q = particle.m_position.at(q) - other_particle.m_position.at(q); // NOTICE THIS IS INEFFICIENT, WE ALREADY COMPUTED IT BUT WAS NOT STORED
                 force.at(q) += 2 * a * r_ij_q / (norm_rij * norm_rij * (norm_rij - a));
             }
         }

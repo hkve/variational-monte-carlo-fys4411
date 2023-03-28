@@ -36,10 +36,10 @@ double AnharmonicOscillator::computeLocalEnergy(
         Particle &particle = *particles.at(k);
         for (int q = 0; q < numberOfDimensions - 1; q++)
         {
-            r_q = particle.getPosition().at(q);
+            r_q = particle.m_position.at(q);
             r2_xy += r_q * r_q;
         }
-        r_q = particle.getPosition().at(numberOfDimensions - 1);
+        r_q = particle.m_position.at(numberOfDimensions - 1);
         r2_z += r_q * r_q;
     }
 

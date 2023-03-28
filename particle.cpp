@@ -31,7 +31,7 @@ double particle_r2(Particle &p)
     double ret = 0; // ret = return value
     for (int q = 0; q < numberOfDimensions; q++)
     {
-        ret += p.getPosition().at(q) * p.getPosition().at(q);
+        ret += p.m_position.at(q) * p.m_position.at(q);
     }
     return ret;
 }
@@ -46,7 +46,7 @@ double particle_r2(Particle &p1, Particle &p2)
     double ret = 0;
     for (int q = 0; q < numberOfDimensions; q++)
     {
-        rdiff = p1.getPosition().at(q) - p2.getPosition().at(q);
+        rdiff = p1.m_position.at(q) - p2.m_position.at(q);
         ret += rdiff * rdiff;
     }
     return ret;
@@ -71,7 +71,7 @@ void particle_add_rdiff(std::vector<double> &diff, Particle &p1, Particle &p2, d
     */
     static const int numberOfDimensions = p1.getNumberOfDimensions();
     for (int i = 0; i < numberOfDimensions; i++)
-        diff.at(i) += scale * (p1.getPosition().at(i) - p2.getPosition().at(i));
+        diff.at(i) += scale * (p1.m_position.at(i) - p2.m_position.at(i));
 }
 
 void Particle::saveEquilibrationPosition()

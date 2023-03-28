@@ -107,7 +107,7 @@ void SimpleGaussian::quantumForce(std::vector<std::unique_ptr<class Particle>> &
 
     for (int q = 0; q < numberOfDimensions; q++)
     {
-        force.at(q) = -4.0 * alpha * particle.getPosition().at(q);
+        force.at(q) = -4.0 * alpha * particle.m_position.at(q);
     }
 }
 
@@ -137,7 +137,7 @@ double SimpleGaussianNumerical::computeDoubleDerivative(std::vector<std::unique_
         gx = evaluateSingleParticle(particle); // gx = g(x) this is the value of the wave function at the current position
         for (int q = 0; q < numberOfDimensions; q++)
         {
-            r_q = particle.getPosition().at(q);
+            r_q = particle.m_position.at(q);
             particle.adjustPosition(m_dx, q);               // adjust the position of the particle by dx in the qth dimension
             gxpdx = evaluateSingleParticle(particle);       // gxpdx = g(x + dx) this is the value of the wave function at the new position
             particle.adjustPosition(-2 * m_dx, q);          // adjust the position of the particle by -2dx in the qth dimension
