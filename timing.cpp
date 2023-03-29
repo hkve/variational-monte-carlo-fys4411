@@ -31,13 +31,8 @@ int main(int argv, char **argc)
     double alpha = omega / 2.0; // Variational parameter. If using gradient descent, this is the initial guess.
     double beta = 1.0;          // Variational parameter. Unless uusing interaction term, this is 1.
     double stepLength = 0.1;    // Metropolis step length.
-    int epochs = 5;             // Number of epochs for gradient descent.
-    double lr = 0.1;            // Learning rate for gradient descent.
     double dx = 10e-6;
-    bool importanceSampling = false;
-    bool gradientDescent = true;
     bool analytical = true;
-    double D = 0.5;
     std::string filename = "";
 
     // If no arguments are given, show usage.
@@ -108,7 +103,7 @@ int main(int argv, char **argc)
 
     // Run steps to equilibrate particles
     auto beginning = std::chrono::high_resolution_clock::now(); // Start timer
-    auto acceptedEquilibrationSteps = system->runEquilibrationSteps(
+    system->runEquilibrationSteps(
         stepLength,
         numberOfEquilibrationSteps);
 
@@ -120,7 +115,6 @@ int main(int argv, char **argc)
     double timelapse = std::chrono::duration_cast<std::chrono::microseconds>(ending - beginning).count(); // find time
     // Output information from the simulation, either as file or print
     if (filename == "")
-    std:
         std::cout << "You need a filename" << std::endl;
     else
         sampler->WriteTimingToFiles(*system, filename, analytical, numberOfEquilibrationSteps, timelapse);
