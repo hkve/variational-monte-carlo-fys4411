@@ -97,16 +97,15 @@ int main(int argv, char **argc)
         stepLength, omega, numberOfDimensions, numberOfParticles, *rng);
 
     // Construct a unique pointer to a new System
-    std::unique_ptr<class Hamiltonian> hamiltonian;
+    std::unique_ptr<class Hamiltonian> hamiltonian; 
 
     if (beta != 1.0)
     {
         double gamma = beta;
         hamiltonian = std::make_unique<AnharmonicOscillator>(gamma);
     }
-    else
-    {
-        hamiltonian  = std::make_unique<HarmonicOscillator>(omega);
+    else {
+        hamiltonian = std::make_unique<HarmonicOscillator>(omega);
     }
 
     // Initialise Interacting Gaussian by default
