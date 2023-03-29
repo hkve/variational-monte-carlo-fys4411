@@ -38,6 +38,7 @@ int main(int argv, char **argc)
     bool analytical = true;
     double D = 0.5;
     string filename = "";
+    string filename_samples = "";
 
     // If no arguments are given, show usage.
     if (argv == 1)
@@ -91,8 +92,9 @@ int main(int argv, char **argc)
     for (int i = 0; i < numberOfWalkers; i++)
     {
         int thread_id = omp_get_thread_num();
-        filename = filename + "_" + to_string(thread_id) + ".txt";
+        filename = filename + "_" + to_string(thread_id);
         filename_samples = filename + "_blocking_samples.dat";
+        filename += ".txt";
         std::cout << "STARTING WALK FROM THREAD " << thread_id << std::endl;
 
         // Seed for the random number generator
@@ -102,7 +104,7 @@ int main(int argv, char **argc)
 
         // Initialize particles
         auto particles = setupRandomUniformInitialState(
-            stepLength, omega, numberOfDimensions, numberOfParticles, *rng);
+            omega, numberOfDimensions, numberOfParticles, *rng, interactionTerm);
 
         // Construct a unique pointer to a new System
         auto hamiltonian = std::make_unique<HarmonicOscillator>(omega);

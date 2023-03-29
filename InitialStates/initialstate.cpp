@@ -9,7 +9,6 @@
 
 
 std::vector<std::unique_ptr<Particle>> setupRandomUniformInitialState(
-            double stepLength,
             double omega,
             unsigned int numberOfDimensions,
             unsigned int numberOfParticles,
@@ -25,15 +24,6 @@ std::vector<std::unique_ptr<Particle>> setupRandomUniformInitialState(
         std::vector<double> position = std::vector<double>();
 
         for (unsigned int j=0; j < numberOfDimensions; j++) {
-            /* This is where you should actually place the particles in
-             * some positions, according to some rule. Since this function is
-             * called random uniform, they should be placed randomly according
-             * to a uniform distribution here.
-             *
-             * Note: For now, the particles are simply placed in positions
-             * according to their index in the particles list (this is
-             * NOT a good idea).
-             */
             double q = (rng.nextDouble()-0.5)*characteristicLength;
             position.push_back(q);
         }
@@ -44,9 +34,44 @@ std::vector<std::unique_ptr<Particle>> setupRandomUniformInitialState(
     return particles;
 }
 
+std::vector<std::unique_ptr<Particle>> setupRandomUniformInitialState(
+            double omega,
+            unsigned int numberOfDimensions,
+            unsigned int numberOfParticles,
+            Random& rng,
+            double a
+        )
+{
+    bool valid = true;
+    std::vector<std::unique_ptr<Particle>> particles;
+    unsigned int i, j;
+    do 
+    {
+        valid = true;
+        particles = setupRandomUniformInitialState(omega, numberOfDimensions, numberOfParticles, rng);
+
+
+        for(i = 0; i < numberOfParticles; i++)
+        {
+            for(j = i+1; j < numberOfParticles; j++)
+            {
+                if( particle_r2(*particles[i], *particles[j]) < a*a )
+                {
+
+                    valid = false;
+                    std::cout << "Particle distance configured to < a = " << a << ". Reconfiguring\n"; 
+                    break;
+                }
+            }
+            if(!valid)
+                break;
+        }
+    } while(!valid);
+
+    return particles;
+}
 
 std::vector<std::unique_ptr<Particle>> setupRandomGaussianState(
-            double stepLength,
             double omega,
             unsigned int numberOfDimensions,
             unsigned int numberOfParticles,
@@ -62,7 +87,7 @@ std::vector<std::unique_ptr<Particle>> setupRandomGaussianState(
         std::vector<double> position = std::vector<double>();
 
         for(unsigned int j=0; j < numberOfDimensions; j++) {
-            double q = rng.nextGaussian(0.0, 1.0)*std::sqrt(stepLength);
+            double q = rng.nextGaussian(0.0, 1.0)*characteristicLength;
             position.push_back(q);
         }
 
