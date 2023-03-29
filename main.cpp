@@ -136,8 +136,7 @@ int main(int argv, char **argc)
     // system->saveSamples("filename_to_save_samples.dat", 0);
 
     // Run steps to equilibrate particles
-    auto acceptedEquilibrationSteps =
-        system->runEquilibrationSteps(stepLength, numberOfEquilibrationSteps);
+    system->runEquilibrationSteps(stepLength, numberOfEquilibrationSteps);
 
     // Run the Metropolis algorithm
     if (!gradientDescent)

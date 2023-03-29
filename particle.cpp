@@ -27,11 +27,11 @@ double particle_r2(Particle &p)
     /*
     Calculate r^2 for particle p
     */
-    static const int numberOfDimensions = p.m_numberOfDimensions;
+    static const int numberOfDimensions = p.getNumberOfDimensions();
     double ret = 0; // ret = return value
     for (int q = 0; q < numberOfDimensions; q++)
     {
-        ret += p.m_position[q] * p.m_position[q];
+        ret += p.getPosition()[q] * p.getPosition()[q];
     }
     return ret;
 }
@@ -41,12 +41,12 @@ double particle_r2(Particle &p1, Particle &p2)
     /*
     Calculate (r_1 - r_2)^2 for particle p1 and p2
     */
-    static const int numberOfDimensions = p1.m_numberOfDimensions;
+    static const int numberOfDimensions = p1.getNumberOfDimensions();
     double rdiff;
     double ret = 0;
     for (int q = 0; q < numberOfDimensions; q++)
     {
-        rdiff = p1.m_position[q] - p2.m_position[q];
+        rdiff = p1.getPosition()[q] - p2.getPosition()[q];
         ret += rdiff * rdiff;
     }
     return ret;
@@ -69,9 +69,9 @@ void particle_add_rdiff(std::vector<double> &diff, Particle &p1, Particle &p2, d
     /*
     Adds a vector term r_1-r_2 to the vector diff. The scale parameter is used since the calculation of "v" has a factor of u'(r_12)/|r_12|
     */
-    static const int numberOfDimensions = p1.m_numberOfDimensions;
+    static const int numberOfDimensions = p1.getNumberOfDimensions();
     for (int i = 0; i < numberOfDimensions; i++)
-        diff[i] += scale * (p1.m_position[i] - p2.m_position[i]);
+        diff[i] += scale * (p1.getPosition()[i] - p2.getPosition()[i]);
 }
 
 void Particle::saveEquilibrationPosition()

@@ -25,25 +25,25 @@ double AnharmonicOscillator::computeLocalEnergy(
      * to get the Laplacian of the wave function.
      * */
     int num_particles = particles.size();
-    int numberOfDimensions = particles.at(0)->m_numberOfDimensions;
-    // double psi_T = waveFunction.evaluate(particles);
+    int numberOfDimensions = particles.at(0)->getNumberOfDimensions();
+    
     double r2_xy = 0;
     double r2_z = 0;
     double r_q = 0;
 
     for (int k = 0; k < num_particles; k++)
     {
-        Particle &particle = *particles.at(k);
+        Particle &particle = *particles[k];
         for (int q = 0; q < numberOfDimensions - 1; q++)
         {
-            r_q = particle.m_position[q];
+            r_q = particle.getPosition()[q];
             r2_xy += r_q * r_q;
         }
-        r_q = particle.m_position[numberOfDimensions - 1];
+        r_q = particle.getPosition()[numberOfDimensions-1];
         r2_z += r_q * r_q;
     }
 
-    double potentialEnergy = 0.5 * (r2_xy + m_gamma * m_gamma * r2_z);
+    double potentialEnergy =    0.5 * (r2_xy + m_gamma * m_gamma * r2_z);
 
     // kinectic energy does not change with anharmonic oscillator
     double kineticEnergy = -0.5 * waveFunction.computeDoubleDerivative(particles);

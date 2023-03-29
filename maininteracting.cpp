@@ -97,12 +97,16 @@ int main(int argv, char **argc)
         stepLength, omega, numberOfDimensions, numberOfParticles, *rng);
 
     // Construct a unique pointer to a new System
-    auto hamiltonian = std::make_unique<HarmonicOscillator>(omega);
+    std::unique_ptr<class Hamiltonian> hamiltonian;
 
     if (beta != 1.0)
     {
         double gamma = beta;
-        auto hamiltonian = std::make_unique<AnharmonicOscillator>(gamma);
+        hamiltonian = std::make_unique<AnharmonicOscillator>(gamma);
+    }
+    else
+    {
+        hamiltonian  = std::make_unique<HarmonicOscillator>(omega);
     }
 
     // Initialise Interacting Gaussian by default
@@ -142,8 +146,7 @@ int main(int argv, char **argc)
     // system->saveSamples("interact_blocking_samples.dat", 0);
 
     // Run steps to equilibrate particles
-    auto acceptedEquilibrationSteps =
-        system->runEquilibrationSteps(stepLength, numberOfEquilibrationSteps);
+    system->runEquilibrationSteps(stepLength, numberOfEquilibrationSteps);
 
     // Run the Metropolis algorithm
     if (!gradientDescent)
