@@ -13,7 +13,6 @@ public:
     std::vector<double> &getPosition() { return m_position; } // using this is slower then using m_position directly because it creates a copy of the vector each time.
     unsigned int &getNumberOfDimensions() { return m_numberOfDimensions; }
 
-
 private:
     unsigned int m_numberOfDimensions = 0;
     std::vector<double> m_position = std::vector<double>();

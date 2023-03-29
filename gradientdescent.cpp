@@ -88,7 +88,7 @@ int main(int argv, char **argc)
     if (argv >= 10)
         analytical = (bool)atoi(argc[9]);
     if (argv >= 11)
-        lr = (double)atof(argc[10]) / (log(numberOfParticles) + 1);
+        lr = (double)atof(argc[10]) / std::sqrt(numberOfParticles);
     if (argv >= 12)
         epsilon = (double)atof(argc[11]);
     if (argv >= 13)

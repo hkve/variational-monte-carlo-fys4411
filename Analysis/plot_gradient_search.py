@@ -12,14 +12,15 @@ mpl.rcParams.update(mpl.rcParamsDefault)
 cmap = plot_utils.cmap 
 
 
-def plot_alpha_search(filename="gradientSearch", D=3, beta=1.0, alpha_range=(0.48,0.48, 1), save=False, interacting=False):
+def plot_alpha_search(filename="gradientSearch", D=3, beta=1.0, alpha_range=(0.5,0.5, 2), save=False, interacting=False):
     alphas = np.linspace(*alpha_range)
-    Ns = [10, 50, 100] # Number of particles
-    stepLengths = [1.1]#, 0.1, 0.5, 1.0]
+    Ns = [10, 50, 100]
+    stepLengths = [0.55]#, 0.1, 0.5, 1.0]
     epsilon = 0.01
-    lr= 0.005
-    logMet = 12 # 2 ^ 17 = 131072
-    logEq = 12 # 2 ^ 16 = 65536
+    lr= 0.01
+    logMet = 18 # 2 ^ 18 = 262144
+    logEq = 15 # 2 ^ 16 = 65536
+ 
 
 
     filename = f"{filename}_{D}D.txt" # prolly a good idea to add the dimension
@@ -43,7 +44,7 @@ def plot_alpha_search(filename="gradientSearch", D=3, beta=1.0, alpha_range=(0.4
     df = cpp_utils.gradientLoad(filename=f"../Data/{filename}") # Load the data
     df_detailed = cpp_utils.gradientLoad(filename=f"../Data/detailed_{filename}")
 
-    ax = sns.lineplot(data=df_detailed, x="Epoch", y="Alpha", hue="Particles", legend="full", palette=plot_utils.cmap)
+    ax = sns.lineplot(data=df_detailed, x="Epoch", y="Alpha", hue="Alpha_0", legend="full", palette=plot_utils.cmap)
     ax.get_legend().remove()
     plt.xlabel("Epoch")
     plt.ylabel(r"$\alpha$")
@@ -113,9 +114,9 @@ def plot_energy_per_particle(filename="GD_energy_per_particle", D=3, interacting
     plt.show()
 
 if __name__ == "__main__":
-    df, df_detailed, info = plot_alpha_search(filename="GD_INT_ELIPT",D=3, save=True, beta=2.82843, interacting=True)
+    df, df_detailed, info = plot_alpha_search(filename="TEST_GD_INT_ELIPT",D=3, save=True, beta=2.82843, interacting=True)
 
-    plot_energy_var("gradientSearch_energy_var_elipt_int", df_detailed, info, save=True)
+    plot_energy_var("TEST_gradientSearch_energy_var_elipt_int", df_detailed, info, save=True)
 
     #plot_energy_per_particle(filename="GD_energy_per_particle", D=3, interacting=True, save=False)
 

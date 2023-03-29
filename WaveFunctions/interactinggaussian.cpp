@@ -217,7 +217,7 @@ double InteractingGaussian::computeDoubleDerivative(std::vector<std::unique_ptr<
         r2_sum_OB += particle_r2(particle_k);
 
         // beta correction to r2. Notice this lets us use the same r2, even if beta is not 1
-        r2_sum_OB += (particle_k.m_position[2] * particle_k.m_position[2]) * (beta - 1);
+        r2_sum_OB += (particle_k.m_position[2] * particle_k.m_position[2]) * (beta * beta - 1);
 
         // Calculate OB gradient and wf ratio
         grad_phi_ratio(grad_phi_ratio_k, particle_k, alpha, beta);
