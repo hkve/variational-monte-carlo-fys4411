@@ -36,16 +36,18 @@ int main(int argv, char **argc)
     bool importanceSampling = false;
     bool gradientDescent = 1;
     bool analytical = true;
+    bool detailed = false;
     double D = 0.5;
     string filename = "";
     string filename_samples = "";
+    string filename_posistions = "";
 
     // If no arguments are given, show usage.
     if (argv == 1)
     {
         cout << "Hello! Usage:" << endl;
         cout << "./vmc #dims #particles #log2(metropolis-steps) "
-                "#log2(equilibriation-steps) omega alpha stepLength "
+                "#log2(equilibriation-steps) alpha stepLength "
                 "importanceSampling? analytical? gradientDescent? filename"
              << endl;
         cout << "#dims, int: Number of dimensions" << endl;
@@ -59,6 +61,7 @@ int main(int argv, char **argc)
         cout << "analytical?, bool: If the analytical expression should be used. Defaults to true" << endl;
         cout << "gradientDescent?, bool: If the gradient descent algorithm should be used. Defaults to true" << endl;
         cout << "filename, string: If the results should be dumped to a file, give the file name. If none is given, a simple print is performed." << endl;
+        cout << "detailed?, bool: Spits at detail information. Defaults to " << endl;
         return 0;
     }
 
@@ -87,6 +90,8 @@ int main(int argv, char **argc)
         gradientDescent = (bool)atoi(argc[10]);
     if (argv >= 12)
         filename = argc[11];
+    if (argv >= 13)
+        detailed = (bool)argc[12];
 
 #pragma omp parallel for firstprivate(alpha, lr, filename)
     for (int i = 0; i < numberOfWalkers; i++)
@@ -94,6 +99,7 @@ int main(int argv, char **argc)
         int thread_id = omp_get_thread_num();
         filename = filename + "_" + to_string(thread_id);
         filename_samples = filename + "_blocking_samples.dat";
+        filename_posistions = filename + "_Rs.txt";
         filename += ".txt";
         std::cout << "STARTING WALK FROM THREAD " << thread_id << std::endl;
 
@@ -142,9 +148,6 @@ int main(int argv, char **argc)
             // Move the vector of particles to system
             std::move(particles));
 
-        // TO SAVE SAMPLES RUN THE FOLLOWING::::
-        // system->saveSamples(filename_samples, 0);
-
         // Run steps to equilibrate particles
         auto acceptedEquilibrationSteps =
             system->runEquilibrationSteps(stepLength, numberOfEquilibrationSteps);
@@ -163,6 +166,12 @@ int main(int argv, char **argc)
                 *system, filename, stepLength, numberOfMetropolisSteps, numberOfEquilibrationSteps, epsilon, lr);
             // Output information from the simulation, either as file or print
             sampler->output(*system, filename, omega, analytical, importanceSampling);
+        }
+
+        if( detailed )
+        {
+            system->saveSamples(filename_samples, 0);
+            system->saveFinalState(filename_posistions);
         }
     }
     return 0;

@@ -186,3 +186,18 @@ int System::getSkip()
 {
   return m_skip;
 }
+
+void System::saveFinalState(std::string filename)
+{
+    std::ofstream file(filename, std::ios::out | std::ios::trunc);
+
+    int w = 20;
+    file << setw(w) << "x" << setw(w) << "y" << setw(w) << "z\n";
+
+    for(int i = 0; i < m_numberOfParticles; i++)
+    {
+        auto r = m_particles.at(i)->getPosition();
+        file << setw(w) << r.at(0) << setw(w) << r.at(1) << setw(w) << r.at(2) << "\n";
+    } 
+    file.close();
+}

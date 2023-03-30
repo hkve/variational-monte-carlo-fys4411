@@ -36,6 +36,7 @@ public:
 
     void saveSamples(std::string filename, int skip);
     int getSkip();
+    void saveFinalState(std::string filename);
 private:
     unsigned int m_numberOfParticles = 0;
     unsigned int m_numberOfDimensions = 0;

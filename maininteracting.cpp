@@ -38,16 +38,18 @@ int main(int argv, char **argc)
     bool importanceSampling = false;
     bool gradientDescent = 1;
     bool analytical = true;
+    bool detailed = false;
     double D = 0.5;
-    string filename = ".txt";
+    string filename = "";
+    
 
     // If no arguments are given, show usage.
     if (argv == 1)
     {
         cout << "Hello! Usage:" << endl;
         cout << "./vmc #dims #particles #log10(metropolis-steps) "
-                "#log10(equilibriation-steps) omega alpha stepLength "
-                "importanceSampling? analytical? gradientDescent? filename"
+                "#log10(equilibriation-steps) alpha stepLength "
+                "importanceSampling? analytical? gradientDescent? detailed? filename"
              << endl;
         cout << "#dims, int: Number of dimensions" << endl;
         cout << "#particles, int: Number of particles" << endl;
@@ -60,6 +62,7 @@ int main(int argv, char **argc)
         cout << "analytical?, bool: If the analytical expression should be used. Defaults to true" << endl;
         cout << "gradientDescent?, bool: If the gradient descent algorithm should be used. Defaults to true" << endl;
         cout << "filename, string: If the results should be dumped to a file, give the file name. If none is given, a simple print is performed." << endl;
+        cout << "detailed?, bool: Spits at detail information. Defaults to " << endl;
         return 0;
     }
 
@@ -88,6 +91,8 @@ int main(int argv, char **argc)
         gradientDescent = (bool)atoi(argc[10]);
     if (argv >= 12)
         filename = argc[11];
+    if (argv >= 13)
+        detailed = (bool)atoi(argc[12]);
 
     // The random engine can also be built without a seed
     auto rng = std::make_unique<Random>(seed);
@@ -141,27 +146,31 @@ int main(int argv, char **argc)
         // Move the vector of particles to system
         std::move(particles));
 
-    // TO SAVE SAMPLES RUN THE FOLLOWING::::
-    // system->saveSamples("interact_blocking_samples.dat", 0);
 
     // Run steps to equilibrate particles
     system->runEquilibrationSteps(stepLength, numberOfEquilibrationSteps);
 
+    std::unique_ptr<class Sampler> sampler;
     // Run the Metropolis algorithm
     if (!gradientDescent)
     {
-        auto sampler =
+        sampler =
             system->runMetropolisSteps(stepLength, numberOfMetropolisSteps);
         // Output information from the simulation, either as file or print
-        sampler->output(*system, filename, omega, analytical, importanceSampling);
+        sampler->output(*system, filename + ".txt", omega, analytical, importanceSampling);
     }
     else
     {
-        auto sampler = system->optimizeMetropolis(
+        sampler = system->optimizeMetropolis(
             *system, filename, stepLength, numberOfMetropolisSteps, numberOfEquilibrationSteps, epsilon, lr);
         // Output information from the simulation, either as file or print
-        sampler->output(*system, filename, omega, analytical, importanceSampling);
+        sampler->output(*system, filename + ".txt", omega, analytical, importanceSampling);
     }
 
+    if (detailed)
+    {
+        system->saveSamples(filename + "_blocking.dat", 0);
+        system->saveFinalState(filename + "_Rs.txt");
+    }
     return 0;
 }

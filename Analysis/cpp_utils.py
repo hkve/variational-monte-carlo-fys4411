@@ -121,7 +121,7 @@ def timingRun(D=3, N=10, logMet=6, logEq=5, omega=1.0, alpha=0.5, stepLength=0.1
 
     subprocess.run(args_run)
 
-def interactRun(D=3, N=10, logMet=20, logEq=16, beta=1.0, alpha=0.5, stepLength=0.1, importance=False, analytical=True, timing=False, GD=False, filename="test.txt"):
+def interactRun(D=3, N=10, logMet=20, logEq=16, beta=1.0, alpha=0.5, stepLength=0.1, importance=False, analytical=True, timing=False, GD=False, filename="test.txt",detailed=False):
     interact_path = interactPath()
     filename_path = dataPath(filename)
 
@@ -139,6 +139,7 @@ def interactRun(D=3, N=10, logMet=20, logEq=16, beta=1.0, alpha=0.5, stepLength=
         int(analytical),
         int(GD),
         filename_path,
+        int(detailed)
     ]
 
     if not filename:
@@ -183,3 +184,8 @@ def binaryLoad(filename):
         f.seek(0)
 
         return np.fromfile(f, dtype=np.float64, count=num_doubles)
+    
+def rLoad(filename):
+    filename = dataPath(filename + "_Rs.txt")
+
+    return pd.read_csv(filename, delim_whitespace=True)
