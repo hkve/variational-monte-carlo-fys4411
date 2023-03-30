@@ -8,19 +8,17 @@ import seaborn as sns
 import time
 
 import matplotlib as mpl
-mpl.rcParams.update(mpl.rcParamsDefault)
 cmap = plot_utils.cmap 
 
 
-def plot_alpha_search(filename="gradientSearch", D=3, beta=1.0, alpha_range=(0.5,0.5, 2), save=False, interacting=False):
+def plot_alpha_search(filename="gradientSearch", D=3, beta=1.0, alpha_range=(0.5, 0.5, 1), save=False, interacting=False):
     alphas = np.linspace(*alpha_range)
     Ns = [10, 50, 100]
     stepLengths = [0.55]#, 0.1, 0.5, 1.0]
     epsilon = 0.01
-    lr= 0.01
-    logMet = 18 # 2 ^ 18 = 262144
-    logEq = 15 # 2 ^ 16 = 65536
- 
+    lr= 0.002
+    logMet = 20 # 2 ^ 18 = 262144
+    logEq = 20 # 2 ^ 16 = 65536
 
 
     filename = f"{filename}_{D}D.txt" # prolly a good idea to add the dimension
@@ -44,10 +42,19 @@ def plot_alpha_search(filename="gradientSearch", D=3, beta=1.0, alpha_range=(0.5
     df = cpp_utils.gradientLoad(filename=f"../Data/{filename}") # Load the data
     df_detailed = cpp_utils.gradientLoad(filename=f"../Data/detailed_{filename}")
 
-    ax = sns.lineplot(data=df_detailed, x="Epoch", y="Alpha", hue="Alpha_0", legend="full", palette=plot_utils.cmap)
+    ax = sns.lineplot(data=df_detailed, x="Epoch", y="Alpha", hue="Particles", legend=True, palette=plot_utils.cmap)
     ax.get_legend().remove()
     plt.xlabel("Epoch")
     plt.ylabel(r"$\alpha$")
+    # add legend
+    handles, labels = ax.get_legend_handles_labels()
+    ax.legend(handles=handles, labels=labels, title="Particles")
+
+
+    #norm = plt.Normalize(df_detailed["Alpha_0"].min(), df_detailed["Alpha_0"].max())
+    #sm = plt.cm.ScalarMappable(cmap=plot_utils.cmap, norm=norm)
+    #sm.set_array([])
+    #plt.colorbar(sm, label=r"$\alpha_0$", cmap=plot_utils.cmap)
 
     if save:
         plot_utils.save("alpha_search" + info)
@@ -58,15 +65,16 @@ def plot_alpha_search(filename="gradientSearch", D=3, beta=1.0, alpha_range=(0.5
 
 def plot_energy_var(filename, df_detailed, info, save=False):
     # Plot the energy variance
-    ax = sns.lineplot(data=df_detailed, x="Alpha", y="Energy_var", hue="Particles", legend=False, palette=plot_utils.cmap)
 
-    norm = plt.Normalize(df_detailed["Alpha_0"].min(), df_detailed["Alpha_0"].max())
-    sm = plt.cm.ScalarMappable(cmap=plot_utils.cmap, norm=norm)
-    sm.set_array([])
-    plt.colorbar(sm, label=r"$\alpha_0$", cmap=plot_utils.cmap)
+    ax = sns.lineplot(data=df_detailed, x="Alpha", y=df_detailed["Energy_var"] / df_detailed["Particles"], hue="Particles", legend=True, palette=plot_utils.cmap)
+
+    #norm = plt.Normalize(df_detailed["Alpha_0"].min(), df_detailed["Alpha_0"].max())
+    #sm = plt.cm.ScalarMappable(cmap=plot_utils.cmap, norm=norm)
+    #sm.set_array([])
+    #plt.colorbar(sm, label=r"$\alpha_0$", cmap=plot_utils.cmap)
 
     plt.xlabel(r"$\alpha$")
-    plt.ylabel(r"Var$(E_L)[(\hbar \omega)^2]$")
+    plt.ylabel(r"Var$(\langle E_L \rangle)/N$")
 
 
     if save:
@@ -79,7 +87,7 @@ def plot_energy_per_particle(filename="GD_energy_per_particle", D=3, interacting
     alphas = [0.51]
     epsilon = 0.01 # this does not need to be super small. This is a tolerance with respect to the gradient, but notice 
                      # that this gets multiplied by the learning rate, so the paramaeter update at the end is what matters
-    lr = 0.01 # this is scaled by the number of particles as epsilon = 1/(ln(N) + 1)
+    lr = 0.01 # this is scaled by the number of particles as epsilon = 1/(sqrt(N))
     stepLength = 1.2
     logMet = 2 # 2^19 = 524288
     logEq = 2 # 2 ^ 14 = 16384
@@ -114,10 +122,14 @@ def plot_energy_per_particle(filename="GD_energy_per_particle", D=3, interacting
     plt.show()
 
 if __name__ == "__main__":
-    df, df_detailed, info = plot_alpha_search(filename="TEST_GD_INT_ELIPT",D=3, save=True, beta=2.82843, interacting=True)
+    df, df_detailed, info = plot_alpha_search(filename="alpha_search_ho_int",D=3, save=True, beta=1, interacting=True)
 
-    plot_energy_var("TEST_gradientSearch_energy_var_elipt_int", df_detailed, info, save=True)
+    plot_energy_var("energy_var_alpha_search_ho_int", df_detailed, info, save=True)
 
     #plot_energy_per_particle(filename="GD_energy_per_particle", D=3, interacting=True, save=False)
+    # note for self:
+        ## when wake, add the grid interact plot with 0.5 to the report
+        ## add the gradient HO interact plot to the report
+        ## add the gradient SO plot with interaction to the report
 
 
