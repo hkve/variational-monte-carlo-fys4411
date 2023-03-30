@@ -101,7 +101,7 @@ int main(int argv, char **argc)
 
     // Initialize particles
     auto particles = setupRandomUniformInitialState(
-        stepLength, omega, numberOfDimensions, numberOfParticles, *rng);
+        omega, numberOfDimensions, numberOfParticles, *rng);
 
     // Construct a unique pointer to a new System
     std::unique_ptr<class Hamiltonian> hamiltonian;

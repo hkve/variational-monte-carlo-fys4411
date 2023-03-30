@@ -74,7 +74,7 @@ int main(int argv, char **argc)
     auto rng = std::make_unique<Random>(seed);
 
     // Initialize particles
-    auto particles = setupRandomUniformInitialState(stepLength, omega, numberOfDimensions, numberOfParticles, *rng);
+    auto particles = setupRandomUniformInitialState(omega, numberOfDimensions, numberOfParticles, *rng);
 
     // Construct a unique pointer to a new System
     auto hamiltonian = std::make_unique<HarmonicOscillator>(omega);

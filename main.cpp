@@ -33,7 +33,7 @@ int main(int argv, char **argc)
     double stepLength = 0.6;    // Metropolis step length.
     double epsilon = 0.05;      // Tolerance for gradient descent.
     double lr = 0.1;            // Learning rate for gradient descent.
-    double dx = 10e-6;
+    double dx = 1e-4;
     bool importanceSampling = false;
     bool gradientDescent = false;
     bool analytical = true;
@@ -93,13 +93,13 @@ int main(int argv, char **argc)
 
     // Initialize particles
     auto particles = setupRandomUniformInitialState(
-        stepLength, omega, numberOfDimensions, numberOfParticles, *rng);
+        omega, numberOfDimensions, numberOfParticles, *rng);
 
     // Construct a unique pointer to a new System
     auto hamiltonian = std::make_unique<HarmonicOscillator>(omega);
 
     // Initialise SimpleGaussian by default
-    std::unique_ptr<class WaveFunction> wavefunction = std::make_unique<SimpleGaussian>(alpha, beta); // Empty wavefunction pointer, since it uses "alpha" in its
+    std::unique_ptr<class WaveFunction> wavefunction; // Empty wavefunction pointer, since it uses "alpha" in its
                                                                                                       // constructor (can only be moved once).
 
     // Empty solver pointer, since it uses "rng" in its constructor (can only be
@@ -109,6 +109,8 @@ int main(int argv, char **argc)
     // Check if numerical gaussian should be used.
     if (!analytical)
         wavefunction = std::make_unique<SimpleGaussianNumerical>(alpha, beta, dx);
+    else
+        wavefunction = std::make_unique<SimpleGaussian>(alpha, beta);
 
     // Set what solver to use, pass on rng and additional parameters
     if (importanceSampling)
@@ -138,6 +140,7 @@ int main(int argv, char **argc)
     // Run steps to equilibrate particles
     system->runEquilibrationSteps(stepLength, numberOfEquilibrationSteps);
 
+    filename += ".txt";
     // Run the Metropolis algorithm
     if (!gradientDescent)
     {
