@@ -28,15 +28,13 @@ def block(x):
     return mu, s[k]/2**(d-k)
 
 if __name__ == "__main__":
-    # n = 10
-    # X = np.random.normal(3.14, 0.20, 2**n)
-    # mu_X, std_X = np.mean(X), np.std(X)
-    # print("No blocking")
-    # print(f"{mu_X = }, {std_X = }")
+    X = cpp_utils.binaryLoad("saveSamplestest.dat")
 
-    # mu_block_X, std_block_X = block(X)
-    # print("Blocking")
-    # print(f"{mu_block_X = }, std_block = {std_block_X+std_X}")
-    x = cpp_utils.binaryLoad("saveSamplestest.dat")
+    mu_X, std_X = np.mean(X), np.std(X)
+    print("No blocking")
+    print(f"{mu_X = }, {std_X = }")
 
-    print(x)
+    mu_block_X, var_block_X = block(X)
+    std_block_X = np.sqrt(var_block_X)
+    print("Blocking")
+    print(f"{mu_block_X = }, std_block = {std_block_X}")
