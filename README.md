@@ -12,19 +12,19 @@ To compile the different programs run `compile_project`. This will make excecuta
 ## The different excecutables and how to run them
 There are different excecutables built for different purposes. If you write `./<excecutable>` you will be given a list of different variables who needs a number. Write what number you want these variables to have in the order they are explained in the code. These will also be explained in each section below.
 ### vmc
-The vmc excecutable works as a skelleton for the other codes. In itself it runs a Monte-Carlo simulation to find the lowest energy state for a given starting alpha.
-The excecutables in order are:
-#dims: How many dimensions do you want to the system to have and calculate in?
-#particles: How many particles do you want to  have in your system?
-#log2(metropolis steps): This is how many metropolis steps you want in your system. It will be the exponential of 2, so if this number is 3, the program will run $2^3=8$ metropolis steps.
-#log2(@-steps): This will determine the amount of Monte-Carlo steps the program will run before doing the Metropolis-steps. It will be the exponential of 2, so if this number is 3, the program will run $2^3=8$ equilibration steps before the Metropolis-steps begin.
-omega: This is the frequency of the trap. See the project report for more explenation.
-alpha: The starting alpha used to calculate the energy. See the project report for more explenation.
-stepLenght: Determines how far a particle is moved per Monte-Carlo cycle. 
-Importantce sampling?: If this is set to 1, then the program will use importance sampling in the calculations. If it is set to 0, it will not.
-analytical?: If this is set to 1, the system will calculate the energy analytically. If it is set to 0, it will use a centered difference approximation to determine the energy. It is recommended to set this to 1 for shorter run time.
-gradientDescent?: If this is set to 1, the program will use the gradient descent to find the find the lowest alpha more efficiently.
-filename: The file the program will write out results to. If nothing is written, the program prints out the results in the terminal instead.
+The vmc excecutable works as a skelleton for the other codes. In itself it runs a Monte-Carlo simulation to find the lowest energy state for a given starting alpha.\
+The excecutables in order are:\
+#dims: How many dimensions do you want to the system to have and calculate in?\
+#particles: How many particles do you want to  have in your system?\
+#log2(metropolis steps): This is how many metropolis steps you want in your system. It will be the exponential of 2, so if this number is 3, the program will run $2^3=8$ metropolis steps.\
+#log2(@-steps): This will determine the amount of Monte-Carlo steps the program will run before doing the Metropolis-steps. It will be the exponential of 2, so if this number is 3, the program will run $2^3=8$ equilibration steps before the Metropolis-steps begin.\
+omega: This is the frequency of the trap. See the project report for more explenation.\
+alpha: The starting alpha used to calculate the energy. See the project report for more explenation.\
+stepLenght: Determines how far a particle is moved per Monte-Carlo cycle. \
+Importantce sampling?: If this is set to 1, then the program will use importance sampling in the calculations. If it is set to 0, it will not.\
+analytical?: If this is set to 1, the system will calculate the energy analytically. If it is set to 0, it will use a centered difference approximation to determine the energy. It is recommended to set this to 1 for shorter run time.\
+gradientDescent?: If this is set to 1, the program will use the gradient descent to find the find the lowest alpha more efficiently.\
+filename: The file the program will write out results to. If nothing is written, the program prints out the results in the terminal instead.\
 
 
 ### interact
