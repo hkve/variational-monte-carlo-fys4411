@@ -24,69 +24,69 @@ stepLenght: Determines how far a particle is moved per Monte-Carlo cycle. \
 Importantce sampling?: If this is set to 1, then the program will use importance sampling in the calculations. If it is set to 0, it will not.\
 analytical?: If this is set to 1, the system will calculate the energy analytically. If it is set to 0, it will use a centered difference approximation to determine the energy. It is recommended to set this to 1 for shorter run time.\
 gradientDescent?: If this is set to 1, the program will use the gradient descent to find the find the lowest alpha more efficiently.\
-filename: The file the program will write out results to. If nothing is written, the program prints out the results in the terminal instead.\
+filename: The file the program will write out results to. If nothing is written, the program prints out the results in the terminal instead.
 
 
 ### interact
-This excecutable works like vmc, but is also contains particle interaction in the model.
-The excecutables in order are:
-#dims: How many dimensions do you want to the system to have and calculate in?
-#particles: How many particles do you want to  have in your system?
-#log2(metropolis steps): This is how many metropolis steps you want in your system. It will be the exponential of 2, so if this number is 3, the program will run $2^3=8$ metropolis steps.
-#log2(@-steps): This will determine the amount of Monte-Carlo steps the program will run before doing the Metropolis-steps. It will be the exponential of 2, so if this number is 3, the program will run $2^3=8$ equilibration steps before the Metropolis-steps begin.
-omega: This is the frequency of the trap. See the project report for more explenation.
-alpha: The starting alpha used to calculate the energy. See the project report for more explenation.
-stepLenght: Determines how far a particle is moved per Monte-Carlo cycle. 
-Importantce sampling?: If this is set to 1, then the program will use importance sampling in the calculations. If it is set to 0, it will not.
-analytical?: If this is set to 1, the system will calculate the energy analytically. If it is set to 0, it will use a centered difference approximation to determine the energy. It is recommended to set this to 1 for shorter run time.
-gradientDescent?: If this is set to 1, the program will use the gradient descent to find the find the lowest alpha more efficiently.
-filename: The file the program will write out results to. If nothing is written.
+This excecutable works like vmc, but is also contains particle interaction in the model.\
+The excecutables in order are:\
+#dims: How many dimensions do you want to the system to have and calculate in?\
+#particles: How many particles do you want to  have in your system?\
+#log2(metropolis steps): This is how many metropolis steps you want in your system. It will be the exponential of 2, so if this number is 3, the program will run $2^3=8$ metropolis steps.\
+#log2(@-steps): This will determine the amount of Monte-Carlo steps the program will run before doing the Metropolis-steps. It will be the exponential of 2, so if this number is 3, the program will run $2^3=8$ equilibration steps before the Metropolis-steps begin.\
+omega: This is the frequency of the trap. See the project report for more explenation.\
+alpha: The starting alpha used to calculate the energy. See the project report for more explenation.\
+stepLenght: Determines how far a particle is moved per Monte-Carlo cycle. \
+Importantce sampling?: If this is set to 1, then the program will use importance sampling in the calculations. If it is set to 0, it will not.\
+analytical?: If this is set to 1, the system will calculate the energy analytically. If it is set to 0, it will use a centered difference approximation to determine the energy. It is recommended to set this to 1 for shorter run time.\
+gradientDescent?: If this is set to 1, the program will use the gradient descent to find the find the lowest alpha more efficiently.\
+filename: The file the program will write out results to. If nothing is written.\
 detailed: If set to 1 the program will give the coordinates of the particles to a file and the information in the middle of the mc calculation to be used in the blocking.
 
 ### parallellinteract
 This excecutable does the same as interact, but uses parallelization to speed things up a bit.
 The excecutables in order are:
-#dims: How many dimensions do you want to the system to have and calculate in?
-#particles: How many particles do you want to  have in your system?
-#log2(metropolis steps): This is how many metropolis steps you want in your system. It will be the exponential of 2, so if this number is 3, the program will run $2^3=8$ metropolis steps.
-#log2(@-steps): This will determine the amount of Monte-Carlo steps the program will run before doing the Metropolis-steps. It will be the exponential of 2, so if this number is 3, the program will run $2^3=8$ equilibration steps before the Metropolis-steps begin.
-omega: This is the frequency of the trap. See the project report for more explenation.
-alpha: The starting alpha used to calculate the energy. See the project report for more explenation.
-stepLenght: Determines how far a particle is moved per Monte-Carlo cycle. 
-Importantce sampling?: If this is set to 1, then the program will use importance sampling in the calculations. If it is set to 0, it will not.
-analytical?: If this is set to 1, the system will calculate the energy analytically. If it is set to 0, it will use a centered difference approximation to determine the energy. It is recommended to set this to 1 for shorter run time.
-gradientDescent?: If this is set to 1, the program will use the gradient descent to find the find the lowest alpha more efficiently.
-filename: The file the program will write out results to. If nothing is written.
+#dims: How many dimensions do you want to the system to have and calculate in?\
+#particles: How many particles do you want to  have in your system?\
+#log2(metropolis steps): This is how many metropolis steps you want in your system. It will be the exponential of 2, so if this number is 3, the program will run $2^3=8$ metropolis steps.\
+#log2(@-steps): This will determine the amount of Monte-Carlo steps the program will run before doing the Metropolis-steps. It will be the exponential of 2, so if this number is 3, the program will run $2^3=8$ equilibration steps before the Metropolis-steps begin.\
+omega: This is the frequency of the trap. See the project report for more explenation.\
+alpha: The starting alpha used to calculate the energy. See the project report for more explenation.\
+stepLenght: Determines how far a particle is moved per Monte-Carlo cycle. \
+Importantce sampling?: If this is set to 1, then the program will use importance sampling in the calculations. If it is set to 0, it will not.\
+analytical?: If this is set to 1, the system will calculate the energy analytically. If it is set to 0, it will use a centered difference approximation to determine the energy. It is recommended to set this to 1 for shorter run time.\
+gradientDescent?: If this is set to 1, the program will use the gradient descent to find the find the lowest alpha more efficiently.\
+filename: The file the program will write out results to. If nothing is written.\
 detailed: If set to 1 the program will give the coordinates of the particles to a file and the information in the middle of the mc calculation to be used in the blocking.
 
 ### timing
-The timing program is used for calculating the timing for the program under different conditions, such as different amount of particles or whether you use the analytical or numerical solver.
-The excecutables in order are:
-#dims: How many dimensions do you want to the system to have and calculate in?
-#particles: How many particles do you want to  have in your system?
-#log2(metropolis steps): This is how many metropolis steps you want in your system. It will be the exponential of 2, so if this number is 3, the program will run $2^3=8$ metropolis steps.
-#log2(@-steps): This will determine the amount of Monte-Carlo steps the program will run before doing the Metropolis-steps. It will be the exponential of 2, so if this number is 3, the program will run $2^3=8$ equilibration steps before the Metropolis-steps begin.
-omega: This is the frequency of the trap. See the project report for more explenation.
-alpha: The starting alpha used to calculate the energy. See the project report for more explenation.
-stepLenght: Determines how far a particle is moved per Monte-Carlo cycle. 
-analytical?: If this is set to 1, the system will calculate the energy analytically. If it is set to 0, it will use a centered difference approximation to determine the energy. It is recommended to set this to 1 for shorter run time.
+The timing program is used for calculating the timing for the program under different conditions, such as different amount of particles or whether you use the analytical or numerical solver.\
+The excecutables in order are:\
+#dims: How many dimensions do you want to the system to have and calculate in?\
+#particles: How many particles do you want to  have in your system?\
+#log2(metropolis steps): This is how many metropolis steps you want in your system. It will be the exponential of 2, so if this number is 3, the program will run $2^3=8$ metropolis steps.\
+#log2(@-steps): This will determine the amount of Monte-Carlo steps the program will run before doing the Metropolis-steps. It will be the exponential of 2, so if this number is 3, the program will run $2^3=8$ equilibration steps before the Metropolis-steps begin.\
+omega: This is the frequency of the trap. See the project report for more explenation.\
+alpha: The starting alpha used to calculate the energy. See the project report for more explenation.\
+stepLenght: Determines how far a particle is moved per Monte-Carlo cycle. \
+analytical?: If this is set to 1, the system will calculate the energy analytically. If it is set to 0, it will use a centered difference approximation to determine the energy. It is recommended to set this to 1 for shorter run time.\
 filename: The file the program will write out results to. If nothing is written, the program prints out the results in the terminal instead.
 
 ### gradient
-The gradient excecutable uses the gradient descent to calculate the best alpha for the system.
-The excutables in order are
-#dims: How many dimensions do you want to the system to have and calculate in?
-#particles: How many particles do you want to  have in your system?
-#log2(metropolis steps): This is how many metropolis steps you want in your system. It will be the exponential of 2, so if this number is 3, the program will run $2^3=8$ metropolis steps.
-#log2(@-steps): This will determine the amount of Monte-Carlo steps the program will run before doing the Metropolis-steps. It will be the exponential of 2, so if this number is 3, the program will run $2^3=8$ equilibration steps before the Metropolis-steps begin.
-omega: This is the frequency of the trap. See the project report for more explenation.
-alpha: The starting alpha used to calculate the energy. See the project report for more explenation.
-stepLenght: Determines how far a particle is moved per Monte-Carlo cycle. 
-Importantce sampling?: If this is set to 1, then the program will use importance sampling in the calculations. If it is set to 0, it will not.
-analytical?: If this is set to 1, the system will calculate the energy analytically. If it is set to 0, it will use a centered difference approximation to determine the energy. It is recommended to set this to 1 for shorter run time.
-learning rate: Decides a variable $l$ to be used in the calculation of the learning rate of the particles. The rest of the finction is given as $\frac{l}{ln(N)+1}$ hvere $N$ is the number of particles.
-epsilon: Decides the tolerance for the gradient descent.
-interaction?: If this is set to 1, the interaction gaussian will be used. If it is set to 0, it will not use interaction.
+The gradient excecutable uses the gradient descent to calculate the best alpha for the system.\
+The excutables in order are:\
+#dims: How many dimensions do you want to the system to have and calculate in?\
+#particles: How many particles do you want to  have in your system?\
+#log2(metropolis steps): This is how many metropolis steps you want in your system. It will be the exponential of 2, so if this number is 3, the program will run $2^3=8$ metropolis steps.\
+#log2(@-steps): This will determine the amount of Monte-Carlo steps the program will run before doing the Metropolis-steps. It will be the exponential of 2, so if this number is 3, the program will run $2^3=8$ equilibration steps before the Metropolis-steps begin.\
+omega: This is the frequency of the trap. See the project report for more explenation.\
+alpha: The starting alpha used to calculate the energy. See the project report for more explenation.\
+stepLenght: Determines how far a particle is moved per Monte-Carlo cycle. \
+Importantce sampling?: If this is set to 1, then the program will use importance sampling in the calculations. If it is set to 0, it will not.\
+analytical?: If this is set to 1, the system will calculate the energy analytically. If it is set to 0, it will use a centered difference approximation to determine the energy. It is recommended to set this to 1 for shorter run time.\
+learning rate: Decides a variable $l$ to be used in the calculation of the learning rate of the particles. The rest of the finction is given as $\frac{l}{ln(N)+1}$ hvere $N$ is the number of particles.\
+epsilon: Decides the tolerance for the gradient descent.\
+interaction?: If this is set to 1, the interaction gaussian will be used. If it is set to 0, it will not use interaction.\
 filename: The file the program will write out results to. If nothing is written, the program prints out the results in the terminal instead.
 
 ## The python scripts
