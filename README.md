@@ -1,16 +1,102 @@
-# Variational Monte Carlo solver template for FYS4411
+# Variational Monte Carlo solver for FYS4411
 
-Example class structure for the first VMC project of [FYS4411 (spring 2023)](https://github.com/CompPhysics/ComputationalPhysics2). You may, if you wish, fork this repository and make it the basis of your project. If you choose to do this, you will have to implement a lot of the crucial functions yourself. The relevant functions you need to implement are spread throughout the project, but they are all commented with a note saying what each function should do.
+Hello! Welcome to our project in Variational Monte Carlo!
+In this project we have tried to simulate a Bose-Einstein system of particles in a magnetic trap, and find the lowest energy state for this system. To do this, we have used tools such as Variational Monte Carlo, Gradient Decent and the Blocking Method. This file will show how to navigate our repository and use our programs.
 
-Please note that this is only a start, and when you have implemented all of these functions you will only have completed the first exercise. However, once this is done, you will have a very good basis for further work, and adding functionality will be easier with a good class structure.
+## The project report
+Our project report can be found in Project1.pdf. This gives a further explenation about the project, our results and discussions.
 
-If you want to write your own code from scratch, you are of course welcome to do so, and feel free to use this code as inspiration for your own class structure.
+## Compiling the project
+To compile the different programs run `compile_project`. This will make excecutables for every program we have. It is recommended that you use a Mac for this.
 
-- If you choose to use this code as a basis for your work, the first thing you should do is fork it, pull it down to your computer, and make sure it compiles and runs. See the next section on how to compile and run the project. After this you should spend at least 10 minutes looking at the structure and familiarizing yourself with how the classes interact with eachother. 
-- A good way to do this may be to simply start at the top of the main.cpp file, and go through all the calls to the `System` class functions. Consider also the base classes `WaveFunction`, `Hamiltonian`, `MonteCarlo` and the function in `initialstate.h`, and see which functions are virtual (i.e., functions that NEED to be implemented by any sub-class).
-- You can skip over the output function in the `Sampler` class and the entire `Random` class in the beginning.
+## The different excecutables and how to run them
+There are different excecutables built for different purposes. If you write `./<excecutable>` you will be given a list of different variables who needs a number. Write what number you want these variables to have in the order they are explained in the code. These will also be explained in each section below.
+### vmc
+The vmc excecutable works as a skelleton for the other codes. In itself it runs a Monte-Carlo simulation to find the lowest energy state for a given starting alpha.
+The excecutables in order are:
+#dims: How many dimensions do you want to the system to have and calculate in?
+#particles: How many particles do you want to  have in your system?
+#log2(metropolis steps): This is how many metropolis steps you want in your system. It will be the exponential of 2, so if this number is 3, the program will run $2^3=8$ metropolis steps.
+#log2(@-steps): This will determine the amount of Monte-Carlo steps the program will run before doing the Metropolis-steps. It will be the exponential of 2, so if this number is 3, the program will run $2^3=8$ equilibration steps before the Metropolis-steps begin.
+omega: This is the frequency of the trap. See the project report for more explenation.
+alpha: The starting alpha used to calculate the energy. See the project report for more explenation.
+stepLenght: Determines how far a particle is moved per Monte-Carlo cycle. 
+Importantce sampling?: If this is set to 1, then the program will use importance sampling in the calculations. If it is set to 0, it will not.
+analytical?: If this is set to 1, the system will calculate the energy analytically. If it is set to 0, it will use a centered difference approximation to determine the energy. It is recommended to set this to 1 for shorter run time.
+gradientDescent?: If this is set to 1, the program will use the gradient descent to find the find the lowest alpha more efficiently.
+filename: The file the program will write out results to. If nothing is written, the program prints out the results in the terminal instead.
 
 
+### interact
+This excecutable works like vmc, but is also contains particle interaction in the model.
+The excecutables in order are:
+#dims: How many dimensions do you want to the system to have and calculate in?
+#particles: How many particles do you want to  have in your system?
+#log2(metropolis steps): This is how many metropolis steps you want in your system. It will be the exponential of 2, so if this number is 3, the program will run $2^3=8$ metropolis steps.
+#log2(@-steps): This will determine the amount of Monte-Carlo steps the program will run before doing the Metropolis-steps. It will be the exponential of 2, so if this number is 3, the program will run $2^3=8$ equilibration steps before the Metropolis-steps begin.
+omega: This is the frequency of the trap. See the project report for more explenation.
+alpha: The starting alpha used to calculate the energy. See the project report for more explenation.
+stepLenght: Determines how far a particle is moved per Monte-Carlo cycle. 
+Importantce sampling?: If this is set to 1, then the program will use importance sampling in the calculations. If it is set to 0, it will not.
+analytical?: If this is set to 1, the system will calculate the energy analytically. If it is set to 0, it will use a centered difference approximation to determine the energy. It is recommended to set this to 1 for shorter run time.
+gradientDescent?: If this is set to 1, the program will use the gradient descent to find the find the lowest alpha more efficiently.
+filename: The file the program will write out results to. If nothing is written.
+detailed: If set to 1 the program will give the coordinates of the particles to a file and the information in the middle of the mc calculation to be used in the blocking.
+
+### parallellinteract
+This excecutable does the same as interact, but uses parallelization to speed things up a bit.
+The excecutables in order are:
+#dims: How many dimensions do you want to the system to have and calculate in?
+#particles: How many particles do you want to  have in your system?
+#log2(metropolis steps): This is how many metropolis steps you want in your system. It will be the exponential of 2, so if this number is 3, the program will run $2^3=8$ metropolis steps.
+#log2(@-steps): This will determine the amount of Monte-Carlo steps the program will run before doing the Metropolis-steps. It will be the exponential of 2, so if this number is 3, the program will run $2^3=8$ equilibration steps before the Metropolis-steps begin.
+omega: This is the frequency of the trap. See the project report for more explenation.
+alpha: The starting alpha used to calculate the energy. See the project report for more explenation.
+stepLenght: Determines how far a particle is moved per Monte-Carlo cycle. 
+Importantce sampling?: If this is set to 1, then the program will use importance sampling in the calculations. If it is set to 0, it will not.
+analytical?: If this is set to 1, the system will calculate the energy analytically. If it is set to 0, it will use a centered difference approximation to determine the energy. It is recommended to set this to 1 for shorter run time.
+gradientDescent?: If this is set to 1, the program will use the gradient descent to find the find the lowest alpha more efficiently.
+filename: The file the program will write out results to. If nothing is written.
+detailed: If set to 1 the program will give the coordinates of the particles to a file and the information in the middle of the mc calculation to be used in the blocking.
+
+### timing
+The timing program is used for calculating the timing for the program under different conditions, such as different amount of particles or whether you use the analytical or numerical solver.
+The excecutables in order are:
+#dims: How many dimensions do you want to the system to have and calculate in?
+#particles: How many particles do you want to  have in your system?
+#log2(metropolis steps): This is how many metropolis steps you want in your system. It will be the exponential of 2, so if this number is 3, the program will run $2^3=8$ metropolis steps.
+#log2(@-steps): This will determine the amount of Monte-Carlo steps the program will run before doing the Metropolis-steps. It will be the exponential of 2, so if this number is 3, the program will run $2^3=8$ equilibration steps before the Metropolis-steps begin.
+omega: This is the frequency of the trap. See the project report for more explenation.
+alpha: The starting alpha used to calculate the energy. See the project report for more explenation.
+stepLenght: Determines how far a particle is moved per Monte-Carlo cycle. 
+analytical?: If this is set to 1, the system will calculate the energy analytically. If it is set to 0, it will use a centered difference approximation to determine the energy. It is recommended to set this to 1 for shorter run time.
+filename: The file the program will write out results to. If nothing is written, the program prints out the results in the terminal instead.
+
+### gradient
+The gradient excecutable uses the gradient descent to calculate the best alpha for the system.
+The excutables in order are
+#dims: How many dimensions do you want to the system to have and calculate in?
+#particles: How many particles do you want to  have in your system?
+#log2(metropolis steps): This is how many metropolis steps you want in your system. It will be the exponential of 2, so if this number is 3, the program will run $2^3=8$ metropolis steps.
+#log2(@-steps): This will determine the amount of Monte-Carlo steps the program will run before doing the Metropolis-steps. It will be the exponential of 2, so if this number is 3, the program will run $2^3=8$ equilibration steps before the Metropolis-steps begin.
+omega: This is the frequency of the trap. See the project report for more explenation.
+alpha: The starting alpha used to calculate the energy. See the project report for more explenation.
+stepLenght: Determines how far a particle is moved per Monte-Carlo cycle. 
+Importantce sampling?: If this is set to 1, then the program will use importance sampling in the calculations. If it is set to 0, it will not.
+analytical?: If this is set to 1, the system will calculate the energy analytically. If it is set to 0, it will use a centered difference approximation to determine the energy. It is recommended to set this to 1 for shorter run time.
+learning rate: Decides a variable $l$ to be used in the calculation of the learning rate of the particles. The rest of the finction is given as $\frac{l}{ln(N)+1}$ hvere $N$ is the number of particles.
+epsilon: Decides the tolerance for the gradient descent.
+interaction?: If this is set to 1, the interaction gaussian will be used. If it is set to 0, it will not use interaction.
+filename: The file the program will write out results to. If nothing is written, the program prints out the results in the terminal instead.
+
+## The python scripts
+In the Analysis folder you will see some python scripts. Some of them are used to run the excecutables made in c++ and analyse the data in different ways.
+### plot_derivative_timing.py
+This is used to plot the timing excecutable and for different particles for both analytical and numerical calculation of the energy. It will then plot the time the caclualations took over the amount of particles calculated for both the analytical and numerical.
+
+
+# From before. Should be deleted afterwards.
+ah
 ## Compiling and running the project
 The recommend way to compile this project is by using CMake to create a Makefile that you can then run. You can install CMake through one of the Linux package managers, e.g., `apt install cmake`, `pacman -S cmake`, etc. For Mac you can install using `brew install cmake`. Other ways of installing are shown here: [https://cmake.org/install/](https://cmake.org/install/).
 

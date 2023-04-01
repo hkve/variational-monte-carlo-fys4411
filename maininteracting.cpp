@@ -62,7 +62,7 @@ int main(int argv, char **argc)
         cout << "analytical?, bool: If the analytical expression should be used. Defaults to true" << endl;
         cout << "gradientDescent?, bool: If the gradient descent algorithm should be used. Defaults to true" << endl;
         cout << "filename, string: If the results should be dumped to a file, give the file name. If none is given, a simple print is performed." << endl;
-        cout << "detailed?, bool: Spits at detail information. Defaults to " << endl;
+        cout << "detailed?, bool: Spits at detail information. Defaults to False" << endl;
         return 0;
     }
 
