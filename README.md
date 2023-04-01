@@ -93,6 +93,22 @@ filename: The file the program will write out results to. If nothing is written,
 In the Analysis folder you will see some python scripts. Some of them are used to run the excecutables made in c++ and analyse the data in different ways.
 ### plot_derivative_timing.py
 This is used to plot the timing excecutable and for different particles for both analytical and numerical calculation of the energy. It will then plot the time the caclualations took over the amount of particles calculated for both the analytical and numerical.
+### blocking.py
+Calculates the result and standard deviation with and without using blocking.
+### plot_3D.py
+
+### plot_acceptance_ratio.py
+
+
+### plot_gradient_search.py
+This code will run the gradient descent. It will then plot the different alphas used on its path to find the lowest energy.
+### plot_importance_sampling.py
+
+### plot_interaction.py
+
+
+### plot_sphericalNIC.py
+
 
 
 # From before. Should be deleted afterwards.
