@@ -59,7 +59,7 @@ int main(int argv, char **argc)
         cout << "stepLenght, double: How far should I move a particle at each MC cycle?" << endl;
         cout << "Importantce sampling?, bool: If the Metropolis Hasting algorithm is used. Then stepLength serves as Delta t" << endl;
         cout << "analytical?, bool: If the analytical expression should be used. Defaults to true" << endl;
-        cout << "learningRate *(ln(#particles) + 1)^-1, double: Learning rate for gradient descent. Defaults to 0.01*(ln(#particles) + 1)^-1" << endl;
+        cout << "learningRate *(sqrt(#particles))^-1, double: Learning rate for gradient descent. Defaults to 0.01*(sqrt(#particles))^-1" << endl;
         cout << "epsilon, double: Tolerance for gradient descent. Defaults to 0.01" << endl;
         cout << "interaction?, bool: If the interacting gaussian should be used. Defaults to false" << endl;
         cout << "filename, string: If the results should be dumped to a file, give the file name. If none is given, a simple print is performed." << endl;
@@ -88,7 +88,7 @@ int main(int argv, char **argc)
     if (argv >= 10)
         analytical = (bool)atoi(argc[9]);
     if (argv >= 11)
-        lr = (double)atof(argc[10]) / (log(numberOfParticles) + 1);
+        lr = (double)atof(argc[10]) / std::sqrt(numberOfParticles);
     if (argv >= 12)
         epsilon = (double)atof(argc[11]);
     if (argv >= 13)
@@ -104,12 +104,16 @@ int main(int argv, char **argc)
         omega, numberOfDimensions, numberOfParticles, *rng);
 
     // Construct a unique pointer to a new System
-    auto hamiltonian = std::make_unique<HarmonicOscillator>(omega);
+    std::unique_ptr<class Hamiltonian> hamiltonian;
 
     if (beta != 1.0)
     {
         double gamma = beta;
-        auto hamiltonian = std::make_unique<AnharmonicOscillator>(gamma);
+        hamiltonian = std::make_unique<AnharmonicOscillator>(gamma);
+    }
+    else
+    {
+        hamiltonian = std::make_unique<HarmonicOscillator>(omega);
     }
 
     // Initialise SimpleGaussian by default

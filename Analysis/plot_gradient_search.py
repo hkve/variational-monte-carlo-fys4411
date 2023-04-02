@@ -8,18 +8,18 @@ import seaborn as sns
 import time
 
 import matplotlib as mpl
-mpl.rcParams.update(mpl.rcParamsDefault)
 cmap = plot_utils.cmap 
+from matplotlib.lines import Line2D
 
 
-def plot_alpha_search(filename="gradientSearch", D=3, beta=1.0, alpha_range=(0.48,0.48, 1), save=False, interacting=False):
+def plot_alpha_search(filename="gradientSearch", D=3, beta=1.0, alpha_range=(0.5, 0.5, 1), save=False, interacting=False):
     alphas = np.linspace(*alpha_range)
-    Ns = [10, 50, 100] # Number of particles
-    stepLengths = [1.1]#, 0.1, 0.5, 1.0]
+    Ns = [10, 50, 100]
+    stepLengths = [0.55]#, 0.1, 0.5, 1.0]
     epsilon = 0.01
-    lr= 0.005
-    logMet = 12 # 2 ^ 17 = 131072
-    logEq = 12 # 2 ^ 16 = 65536
+    lr= 0.002
+    logMet = 20 # 2 ^ 18 = 262144
+    logEq = 20 # 2 ^ 16 = 65536
 
 
     filename = f"{filename}_{D}D.txt" # prolly a good idea to add the dimension
@@ -43,10 +43,19 @@ def plot_alpha_search(filename="gradientSearch", D=3, beta=1.0, alpha_range=(0.4
     df = cpp_utils.gradientLoad(filename=f"../Data/{filename}") # Load the data
     df_detailed = cpp_utils.gradientLoad(filename=f"../Data/detailed_{filename}")
 
-    ax = sns.lineplot(data=df_detailed, x="Epoch", y="Alpha", hue="Particles", legend="full", palette=plot_utils.cmap)
+    ax = sns.lineplot(data=df_detailed, x="Epoch", y="Alpha", hue="Particles", legend=True, palette=plot_utils.cmap)
     ax.get_legend().remove()
     plt.xlabel("Epoch")
     plt.ylabel(r"$\alpha$")
+    # add legend
+    handles, labels = ax.get_legend_handles_labels()
+    ax.legend(handles=handles, labels=labels, title="Particles")
+
+
+    #norm = plt.Normalize(df_detailed["Alpha_0"].min(), df_detailed["Alpha_0"].max())
+    #sm = plt.cm.ScalarMappable(cmap=plot_utils.cmap, norm=norm)
+    #sm.set_array([])
+    #plt.colorbar(sm, label=r"$\alpha_0$", cmap=plot_utils.cmap)
 
     if save:
         plot_utils.save("alpha_search" + info)
@@ -57,15 +66,16 @@ def plot_alpha_search(filename="gradientSearch", D=3, beta=1.0, alpha_range=(0.4
 
 def plot_energy_var(filename, df_detailed, info, save=False):
     # Plot the energy variance
-    ax = sns.lineplot(data=df_detailed, x="Alpha", y="Energy_var", hue="Particles", legend=False, palette=plot_utils.cmap)
 
-    norm = plt.Normalize(df_detailed["Alpha_0"].min(), df_detailed["Alpha_0"].max())
-    sm = plt.cm.ScalarMappable(cmap=plot_utils.cmap, norm=norm)
-    sm.set_array([])
-    plt.colorbar(sm, label=r"$\alpha_0$", cmap=plot_utils.cmap)
+    ax = sns.lineplot(data=df_detailed, x="Alpha", y=df_detailed["Energy_var"] / df_detailed["Particles"], hue="Particles", legend=True, palette=plot_utils.cmap)
+
+    #norm = plt.Normalize(df_detailed["Alpha_0"].min(), df_detailed["Alpha_0"].max())
+    #sm = plt.cm.ScalarMappable(cmap=plot_utils.cmap, norm=norm)
+    #sm.set_array([])
+    #plt.colorbar(sm, label=r"$\alpha_0$", cmap=plot_utils.cmap)
 
     plt.xlabel(r"$\alpha$")
-    plt.ylabel(r"Var$(E_L)[(\hbar \omega)^2]$")
+    plt.ylabel(r"Var$(\langle E_L \rangle)/N$")
 
 
     if save:
@@ -78,7 +88,7 @@ def plot_energy_per_particle(filename="GD_energy_per_particle", D=3, interacting
     alphas = [0.51]
     epsilon = 0.01 # this does not need to be super small. This is a tolerance with respect to the gradient, but notice 
                      # that this gets multiplied by the learning rate, so the paramaeter update at the end is what matters
-    lr = 0.01 # this is scaled by the number of particles as epsilon = 1/(ln(N) + 1)
+    lr = 0.01 # this is scaled by the number of particles as epsilon = 1/(sqrt(N))
     stepLength = 1.2
     logMet = 2 # 2^19 = 524288
     logEq = 2 # 2 ^ 14 = 16384
@@ -113,10 +123,70 @@ def plot_energy_per_particle(filename="GD_energy_per_particle", D=3, interacting
     plt.show()
 
 if __name__ == "__main__":
-    df, df_detailed, info = plot_alpha_search(filename="GD_INT_ELIPT",D=3, save=True, beta=2.82843, interacting=True)
+    #df, df_detailed, info = plot_alpha_search(filename="alpha_search_ho_int",D=3, save=True, beta=1, interacting=True)
 
-    plot_energy_var("gradientSearch_energy_var_elipt_int", df_detailed, info, save=True)
+    #plot_energy_var("energy_var_alpha_search_ho_int", df_detailed, info, save=True)
 
-    #plot_energy_per_particle(filename="GD_energy_per_particle", D=3, interacting=True, save=False)
+
+    # plot alpha search for ho and eo in same plot
+    #df_ho, df_detailed_ho, info_ho = plot_alpha_search(filename="alpha_search_ho_int",D=3, save=True, beta=1, interacting=True)
+    #df_eo, df_detailed_eo, info_eo = plot_alpha_search(filename="alpha_search_eo_int",D=3, save=True, beta=1, interacting=True)
+
+    # plot energy variance for ho and eo in same plot
+    #plot_energy_var("energy_var_alpha_search_ho_int", df_detailed_ho, info_ho, save=True)
+    #plot_energy_var("energy_var_alpha_search_eo_int", df_detailed_eo, info_eo, save=True)
+
+    # plot alpha search for ho and eo in same plot
+    df_ho, df_detailed_ho, info_ho = plot_alpha_search(filename="alpha_search_ho_int",D=3, save=True, beta=1, interacting=True)
+    df_eo, df_detailed_eo, info_eo = plot_alpha_search(filename="alpha_search_eo_int",D=3, save=True, beta=1, interacting=True)
+
+    # plot alpha and epoch for ho and eo in same plot (with different colors)
+    ax1 = sns.lineplot(data=df_detailed_ho, x="Epoch", y="Alpha", hue="Particles", legend=True, palette=plot_utils.cmap)
+
+    # make this dashed
+    ax2 = sns.lineplot(data=df_detailed_eo, x="Epoch", y="Alpha", hue="Particles", legend=False, palette=plot_utils.cmap, linestyle="--")
+
+    # add legend
+    handles, labels = ax1.get_legend_handles_labels()
+
+    ax1.legend(handles=handles + [Line2D([0], [0], color="gray", linestyle='--')] + [Line2D([0], [0], color="gray", linestyle='-')], labels=labels + ["EO"] + ["HO"], title="Particles")
+    # add to legend a continuous line as saying it is for the ho case without overriting the previous legend.
+
+    # add labels
+    plt.xlabel("Epoch")
+    plt.ylabel(r"$\alpha$")
+
+    # save and show
+    plot_utils.save("alpha_and_epoch_ho_eo")
+    plt.show()
+
+    # do the same thig but with the energy variance per particle
+
+    ax1 = sns.lineplot(data=df_detailed_ho, x="Epoch", y="Energy_var", hue="Particles", legend=True, palette=plot_utils.cmap)
+
+    # make this dashed
+    ax2 = sns.lineplot(data=df_detailed_eo, x="Epoch", y="Energy_var", hue="Particles", legend=False, palette=plot_utils.cmap, linestyle="--")
+
+    # add legend
+    handles, labels = ax1.get_legend_handles_labels()
+
+    ax1.legend(handles=handles + [Line2D([0], [0], color="gray", linestyle='--')] + [Line2D([0], [0], color="gray", linestyle='-')], labels=labels + ["EO"] + ["HO"], title="Particles")
+    # add to legend a continuous line as saying it is for the ho case without overriting the previous legend.
+
+    # add labels
+    plt.xlabel("Epoch")
+    plt.ylabel(r"Log Var$(\langle E_L \rangle)/N$")
+    plt.yscale("log")
+
+    # save and show
+    plot_utils.save("energy_var_and_epoch_ho_eo")
+    plt.show()
+
+    
+
+
+
+
+
 
 

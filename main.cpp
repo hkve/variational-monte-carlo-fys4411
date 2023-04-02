@@ -100,7 +100,7 @@ int main(int argv, char **argc)
 
     // Initialise SimpleGaussian by default
     std::unique_ptr<class WaveFunction> wavefunction; // Empty wavefunction pointer, since it uses "alpha" in its
-                                                                                                      // constructor (can only be moved once).
+                                                      // constructor (can only be moved once).
 
     // Empty solver pointer, since it uses "rng" in its constructor (can only be
     // moved once).
@@ -135,7 +135,7 @@ int main(int argv, char **argc)
         std::move(particles));
 
     // TO SAVE SAMPLES RUN THE FOLLOWING::::
-    // system->saveSamples("filename_to_save_samples.dat", 0);
+    system->saveSamples("filename_to_save_samples.dat", 0);
 
     // Run steps to equilibrate particles
     system->runEquilibrationSteps(stepLength, numberOfEquilibrationSteps);

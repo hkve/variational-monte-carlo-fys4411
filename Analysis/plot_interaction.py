@@ -5,14 +5,13 @@ import cpp_utils
 import time 
 import matplotlib as mpl
 
-mpl.rcParams.update(mpl.rcParamsDefault)
 cmap = plot_utils.cmap 
 
 def plot_energy_per_particle(filename="energy_per_particle", D=3, save=False):
-    Ns = np.array([1, 10, 30, 50])
-    alphas = np.linspace(0.3, 1.0, 10)
+    Ns = np.array([1, 10, 50, 100])
+    alphas = np.linspace(0.1, 1.1, 11)
 
-    stepLength = 1.5
+    stepLength = 0.55
 
     # start time measurement
     start = time.time()
@@ -34,13 +33,13 @@ def plot_energy_per_particle(filename="energy_per_particle", D=3, save=False):
         df_N = df[ df.Particles == N ]
         E, E_std, alpha, MCCs = df_N["Energy"].to_numpy(), df_N["Energy_var"].to_numpy(), df_N["WF1"].to_numpy(), df_N["Metro-steps"].to_numpy()
         ax.errorbar(alpha, E/N, np.sqrt(E_std)/(MCCs), c=c[i], label=f"{N =}", marker="o")
-        #print(f"Minimum energy at alpha = {alphas[np.argmin(E)]}")
+        print(f"Minimum energy at alpha = {alphas[np.argmin(E)]}")
 
     ax.legend(ncol=4, bbox_to_anchor=(1.05, 1.15))
-    ax.set(xlabel=r"$\alpha$", ylabel="$expectation E_L [\hbar \omega]$")
+    ax.set(xlabel=r"$\alpha$", ylabel=r"$\langle E_L\rangle/N$")
     if save:
         plot_utils.save(filename.replace(".txt",f"_plot"))
     plt.show()
 
 if __name__ == "__main__":
-    plot_energy_per_particle(filename="energy_per_particle_test")
+    plot_energy_per_particle(filename="energy_per_particle_interact", save=True)

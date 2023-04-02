@@ -38,18 +38,20 @@ double InteractingGaussian::evaluate(std::vector<std::unique_ptr<class Particle>
     double r_ij = 0;
     double interaction = 1;
 
-    for(int i = 0; i < m_numberOfParticles; i++) {
-        Particle& particle_i = *particles[i];
+    for (int i = 0; i < m_numberOfParticles; i++)
+    {
+        Particle &particle_i = *particles[i];
         r2 += particle_r2(particle_i);
-        r2 += particle_i.getPosition()[2]*particle_i.getPosition()[2]*(beta-1);
-    
-        for(int j = i+1; j < m_numberOfParticles; j++) {
-            Particle& particle_j = *particles[j];
+        r2 += particle_i.getPosition()[2] * particle_i.getPosition()[2] * (beta - 1);
+
+        for (int j = i + 1; j < m_numberOfParticles; j++)
+        {
+            Particle &particle_j = *particles[j];
             r_ij = std::sqrt(particle_r2(particle_i, particle_j));
-            interaction *= (1 - a/r_ij) * (r_ij > a);
+            interaction *= (1 - a / r_ij) * (r_ij > a);
         }
     }
-    
+
     double gaussian = std::exp(-alpha * r2); // Notice this includes beta.
     return gaussian * interaction;
 }
@@ -90,7 +92,7 @@ double InteractingGaussian::evaluate_w(int proposed_particle_idx, class Particle
         r_gj_prime = std::sqrt(particle_r2(proposed_particle, *particles[i]));
         r_gj = std::sqrt(particle_r2(old_particle, *particles[i]));
         delta = (r_gj_prime > a) * (r_gj > a);
-        if(!delta)
+        if (!delta)
             return 0;
         interaction *= (1.0 - a / r_gj_prime) / (1.0 - a / r_gj); // ratio for relative r_gj distance
     }
@@ -100,7 +102,7 @@ double InteractingGaussian::evaluate_w(int proposed_particle_idx, class Particle
         r_gj_prime = std::sqrt(particle_r2(proposed_particle, *particles[i]));
         r_gj = std::sqrt(particle_r2(old_particle, *particles[i]));
         delta = (r_gj_prime > a) * (r_gj > a);
-        if(!delta)
+        if (!delta)
             return 0;
         interaction *= (1.0 - a / r_gj_prime) / (1.0 - a / r_gj);
     }
@@ -207,7 +209,7 @@ double InteractingGaussian::computeDoubleDerivative(std::vector<std::unique_ptr<
         r2_sum_OB += particle_r2(particle_k);
 
         // beta correction to r2. Notice this lets us use the same r2, even if beta is not 1
-        r2_sum_OB += (particle_k.getPosition()[2] * particle_k.getPosition()[2]) * (beta*beta - 1);
+        r2_sum_OB += (particle_k.getPosition()[2] * particle_k.getPosition()[2]) * (beta * beta - 1);
 
         // Calculate OB gradient and wf ratio
         grad_phi_ratio(grad_phi_ratio_k, particle_k, alpha, beta);
