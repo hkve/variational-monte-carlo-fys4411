@@ -25,16 +25,16 @@ def block(x):
     if (k >= d-1):
         print("Warning: Use more data")
 
-    return mu, s[k]/2**(d-k)
+    return mu, s[k]/2**(d-k) # I think this is the /M
 
 if __name__ == "__main__":
     X = cpp_utils.binaryLoad("Part_10_parallel_eliptical_0_blocking_samples.dat")
 
-    mu_X, std_X = np.mean(X), np.std(X)
+    mu_X, error_X = np.mean(X), np.std(X)/np.sqrt(len(X))
     print("No blocking")
-    print(f"{mu_X = }, {std_X = }")
+    print(f"{mu_X = }, {error_X = }")
 
     mu_block_X, var_block_X = block(X)
-    std_block_X = np.sqrt(var_block_X)
+    err_block_X = np.sqrt(var_block_X)
     print("Blocking")
-    print(f"{mu_block_X = }, std_block = {std_block_X}")
+    print(f"{mu_block_X = }, err_block = {err_block_X}")

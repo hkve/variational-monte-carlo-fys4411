@@ -1,7 +1,8 @@
-import numpy as np
-import matplotlib.pyplot as plt
-import plot_utils
 import cpp_utils
+import matplotlib.pyplot as plt
+import numpy as np
+import plot_utils
+
 
 def plot_acceptance(filename="acceptance", stepLength_range=(0.1, 10, 10), save=False, impo=False):
     N = 10
@@ -19,7 +20,7 @@ def plot_acceptance(filename="acceptance", stepLength_range=(0.1, 10, 10), save=
 
     filename = f"{filename}_{extension[impo]}"
     total = len(stepLengths)*len(alphas)
-    if not cpp_utils.dataPath(filename).exists():
+    if not cpp_utils.dataPath(filename + ".txt").exists():
         for i, stepLength in enumerate(stepLengths):
             for j, alpha in enumerate(alphas):
                 cpp_utils.vmcRun(D=3, N=N, logMet=15, logEq=10, filename=filename, stepLength=stepLength, alpha=alpha, importance=impo)
@@ -38,7 +39,7 @@ def plot_acceptance(filename="acceptance", stepLength_range=(0.1, 10, 10), save=
         plot_utils.save(filename + "_plot")
     plt.show()
 
-def plot_compare_algos(filename="compare_algs"):
+def plot_compare_algos(filename="compare_algos", save=False):
     N = 30
     Ms = np.linspace(14, 22, 100)
 
@@ -53,15 +54,26 @@ def plot_compare_algos(filename="compare_algs"):
     df_m = df[df["Imposampling"] == 0]
     df_mh = df[df["Imposampling"] == 1]
     print(df_m["Accept_ratio"], df_mh["Accept_ratio"])
-    
+    delta = 1e-3
+    exponent = f"{np.log10(delta):.0f}"
+    E_end = (df_m.Energy.iloc[-1] + df_mh.Energy.iloc[-1])/2
+    diff = E_end*delta
+
+
     fig, ax = plt.subplots()
-    ax.plot(Ms, df_m.Energy, label="M")
-    ax.plot(Ms, df_mh.Energy, label="MH")
-
+    ax.plot(Ms, df_m.Energy, label="Metropolis")
+    ax.plot(Ms, df_mh.Energy, label="Metropolis-Hastings")
+    ax.fill_between(Ms, E_end-diff, E_end+diff, alpha=0.4, label=r"$\delta E / E = 10^{" + exponent + "}$")
+    ax.set(xlabel=r"log$_2(M)$", ylabel=r"$\langle E_L \rangle$")
     ax.legend()
-    plt.show()
-if __name__ == '__main__':
-    # plot_acceptance(stepLength_range=(0.05, 5, 100), impo=False, save=True)
-    # plot_acceptance(filename="test", stepLength_range=(0.05, 5, 100), impo=True, save=False)
 
-    plot_compare_algos(filename="compare_algos_two")
+    if save:
+        plot_utils.save(filename)
+
+    plt.show()
+
+if __name__ == '__main__':
+    plot_acceptance(stepLength_range=(0.05, 5, 100), impo=False, save=False)
+    plot_acceptance(stepLength_range=(0.05, 5, 100), impo=True, save=False)
+
+    plot_compare_algos(save=False)
