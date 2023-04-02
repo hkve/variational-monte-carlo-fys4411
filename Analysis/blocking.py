@@ -28,7 +28,7 @@ def block(x):
     return mu, s[k]/2**(d-k)
 
 if __name__ == "__main__":
-    X = cpp_utils.binaryLoad("saveSamplestest.dat")
+    X = cpp_utils.binaryLoad("Part_10_parallel_eliptical_0_blocking_samples.dat")
 
     mu_X, std_X = np.mean(X), np.std(X)
     print("No blocking")

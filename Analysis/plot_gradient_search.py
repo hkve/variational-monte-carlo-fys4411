@@ -9,6 +9,7 @@ import time
 
 import matplotlib as mpl
 cmap = plot_utils.cmap 
+from matplotlib.lines import Line2D
 
 
 def plot_alpha_search(filename="gradientSearch", D=3, beta=1.0, alpha_range=(0.5, 0.5, 1), save=False, interacting=False):
@@ -122,14 +123,70 @@ def plot_energy_per_particle(filename="GD_energy_per_particle", D=3, interacting
     plt.show()
 
 if __name__ == "__main__":
-    df, df_detailed, info = plot_alpha_search(filename="alpha_search_ho_int",D=3, save=True, beta=1, interacting=True)
+    #df, df_detailed, info = plot_alpha_search(filename="alpha_search_ho_int",D=3, save=True, beta=1, interacting=True)
 
-    plot_energy_var("energy_var_alpha_search_ho_int", df_detailed, info, save=True)
+    #plot_energy_var("energy_var_alpha_search_ho_int", df_detailed, info, save=True)
 
-    #plot_energy_per_particle(filename="GD_energy_per_particle", D=3, interacting=True, save=False)
-    # note for self:
-        ## when wake, add the grid interact plot with 0.5 to the report
-        ## add the gradient HO interact plot to the report
-        ## add the gradient SO plot with interaction to the report
+
+    # plot alpha search for ho and eo in same plot
+    #df_ho, df_detailed_ho, info_ho = plot_alpha_search(filename="alpha_search_ho_int",D=3, save=True, beta=1, interacting=True)
+    #df_eo, df_detailed_eo, info_eo = plot_alpha_search(filename="alpha_search_eo_int",D=3, save=True, beta=1, interacting=True)
+
+    # plot energy variance for ho and eo in same plot
+    #plot_energy_var("energy_var_alpha_search_ho_int", df_detailed_ho, info_ho, save=True)
+    #plot_energy_var("energy_var_alpha_search_eo_int", df_detailed_eo, info_eo, save=True)
+
+    # plot alpha search for ho and eo in same plot
+    df_ho, df_detailed_ho, info_ho = plot_alpha_search(filename="alpha_search_ho_int",D=3, save=True, beta=1, interacting=True)
+    df_eo, df_detailed_eo, info_eo = plot_alpha_search(filename="alpha_search_eo_int",D=3, save=True, beta=1, interacting=True)
+
+    # plot alpha and epoch for ho and eo in same plot (with different colors)
+    ax1 = sns.lineplot(data=df_detailed_ho, x="Epoch", y="Alpha", hue="Particles", legend=True, palette=plot_utils.cmap)
+
+    # make this dashed
+    ax2 = sns.lineplot(data=df_detailed_eo, x="Epoch", y="Alpha", hue="Particles", legend=False, palette=plot_utils.cmap, linestyle="--")
+
+    # add legend
+    handles, labels = ax1.get_legend_handles_labels()
+
+    ax1.legend(handles=handles + [Line2D([0], [0], color="gray", linestyle='--')] + [Line2D([0], [0], color="gray", linestyle='-')], labels=labels + ["EO"] + ["HO"], title="Particles")
+    # add to legend a continuous line as saying it is for the ho case without overriting the previous legend.
+
+    # add labels
+    plt.xlabel("Epoch")
+    plt.ylabel(r"$\alpha$")
+
+    # save and show
+    plot_utils.save("alpha_and_epoch_ho_eo")
+    plt.show()
+
+    # do the same thig but with the energy variance per particle
+
+    ax1 = sns.lineplot(data=df_detailed_ho, x="Epoch", y="Energy_var", hue="Particles", legend=True, palette=plot_utils.cmap)
+
+    # make this dashed
+    ax2 = sns.lineplot(data=df_detailed_eo, x="Epoch", y="Energy_var", hue="Particles", legend=False, palette=plot_utils.cmap, linestyle="--")
+
+    # add legend
+    handles, labels = ax1.get_legend_handles_labels()
+
+    ax1.legend(handles=handles + [Line2D([0], [0], color="gray", linestyle='--')] + [Line2D([0], [0], color="gray", linestyle='-')], labels=labels + ["EO"] + ["HO"], title="Particles")
+    # add to legend a continuous line as saying it is for the ho case without overriting the previous legend.
+
+    # add labels
+    plt.xlabel("Epoch")
+    plt.ylabel(r"Log Var$(\langle E_L \rangle)/N$")
+    plt.yscale("log")
+
+    # save and show
+    plot_utils.save("energy_var_and_epoch_ho_eo")
+    plt.show()
+
+    
+
+
+
+
+
 
 

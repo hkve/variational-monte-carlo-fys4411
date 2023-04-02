@@ -30,6 +30,10 @@ def interactPath():
     filename_interact = rootPath() / pl.Path(f"build/interact")
     return filename_interact
 
+def parallelinteractPath():
+    filename_interact = rootPath() / pl.Path(f"build/parallelinteract")
+    return filename_interact
+
 def dataPath(filename):
     filename_path = rootPath() / pl.Path(f"Data/{filename}")
     return filename_path
@@ -61,6 +65,36 @@ def vmcRun(D=3, N=10, logMet=20, logEq=16, omega=1.0, alpha=0.5, stepLength=0.1,
     args_run = [str(arg) for arg in args]
 
     subprocess.run(args_run)
+
+def parallelinteractRun(D=3, N=10, logMet=20, logEq=16, beta=1.0, alpha=0.5, stepLength=0.55, importance=False, analytical=True, GD=False, filename="test.txt", detailed=False):
+    interact_path = parallelinteractPath()
+    filename_path = dataPath(filename)
+    #2^21 = 2097152
+
+    assert interact_path.exists(), f"I cannot find {interact_path} :((, are you sure you have compiled?"
+    args = [
+        interact_path,
+        D,
+        N,
+        logMet,
+        logEq,
+        alpha,
+        beta,
+        stepLength,
+        int(importance),
+        int(analytical),
+        int(GD),
+        filename_path,
+        int(detailed)
+    ]
+
+    if not filename:
+        args.pop()
+    
+    args_run = [str(arg) for arg in args]
+
+    subprocess.run(args_run)
+
 
 def gradientRun(D=3, N=10, logMet=16, logEq=14, alpha=0.5, stepLength=0.1, epsilon=0.01, lr= 0.01, importance=False, analytical=True, interacting=False, beta=1.0,  filename="gradientSearch.txt"):
     """

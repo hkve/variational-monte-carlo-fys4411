@@ -41,7 +41,6 @@ int main(int argv, char **argc)
     bool detailed = false;
     double D = 0.5;
     string filename = "";
-    
 
     // If no arguments are given, show usage.
     if (argv == 1)
@@ -102,14 +101,15 @@ int main(int argv, char **argc)
         omega, numberOfDimensions, numberOfParticles, *rng, interactionTerm);
 
     // Construct a unique pointer to a new System
-    std::unique_ptr<class Hamiltonian> hamiltonian; 
+    std::unique_ptr<class Hamiltonian> hamiltonian;
 
     if (beta != 1.0)
     {
         double gamma = beta;
         hamiltonian = std::make_unique<AnharmonicOscillator>(gamma);
     }
-    else {
+    else
+    {
         hamiltonian = std::make_unique<HarmonicOscillator>(omega);
     }
 
@@ -146,8 +146,12 @@ int main(int argv, char **argc)
         // Move the vector of particles to system
         std::move(particles));
 
-
     // Run steps to equilibrate particles
+
+    if (detailed)
+    {
+        system->saveSamples(filename + "_blocking.dat", 0);
+    }
     system->runEquilibrationSteps(stepLength, numberOfEquilibrationSteps);
 
     std::unique_ptr<class Sampler> sampler;
@@ -169,7 +173,6 @@ int main(int argv, char **argc)
 
     if (detailed)
     {
-        system->saveSamples(filename + "_blocking.dat", 0);
         system->saveFinalState(filename + "_Rs.txt");
     }
     return 0;
